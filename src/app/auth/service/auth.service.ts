@@ -1,0 +1,63 @@
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, catchError, map, Observable, of, switchMap, tap } from 'rxjs';
+import { LoginResponse, RoleName, UserResponse } from '../models/user.interface';
+import { ApiResponse } from '../../core/models/api-response.interface';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthService {
+    private readonly userSubject = new BehaviorSubject<UserResponse | null>(null);
+    private readonly http = inject(HttpClient);
+    private readonly baseUrl = 'http://localhost:3000/auth';
+
+    public user$ = this.userSubject.asObservable();
+    private initialized = false;
+
+    get currentUser(): UserResponse | null {
+        const user = this.userSubject.value;
+        return user;
+    }
+
+    login(email: string, password: string): Observable<UserResponse> {
+        return this.http.post<ApiResponse<LoginResponse>>(`${this.baseUrl}/login-user`, { email, password }).pipe(
+            switchMap(() => this.me()), // usa la cookie
+            map((res) => res.data) // ← ya actualiza userSubject dentro de me()
+        );
+    }
+
+    me(): Observable<ApiResponse<UserResponse>> {
+        if (this.initialized) {
+            return of({ data: this.currentUser } as ApiResponse<UserResponse>);
+        }
+
+        return this.http.get<ApiResponse<UserResponse>>(`${this.baseUrl}/me`).pipe(
+            tap((user) => {
+                this.userSubject.next(user.data);
+                this.initialized = true;
+            }),
+            catchError(() => {
+                this.userSubject.next(null);
+                return of({ data: null } as any);
+            })
+        );
+    }
+
+    hasRole(roles: RoleName[]): boolean {
+        const role = this.currentUser?.role;
+        return role !== undefined && roles.includes(role as RoleName);
+    }
+
+    isAuthenticated(): boolean {
+        return !!this.currentUser;
+    }
+
+    logout(): Observable<void> {
+        return this.http.post<void>(`${this.baseUrl}/logout`, {}).pipe(
+            tap(() => {
+                this.userSubject.next(null);
+            })
+        );
+    }
+}
