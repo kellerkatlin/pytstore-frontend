@@ -77,12 +77,27 @@ export class LayoutService {
     transitionComplete = signal<boolean>(false);
 
     private initialized = false;
-
     constructor() {
+        const savedConfig = localStorage.getItem('layout-config');
+        if (savedConfig) {
+            try {
+                this._config = JSON.parse(savedConfig);
+                this.layoutConfig.set(this._config);
+            } catch (error) {
+                console.error('Error al leer layout-config:', error);
+            }
+        }
+
         effect(() => {
             const config = this.layoutConfig();
             if (config) {
                 this.onConfigUpdate();
+
+                try {
+                    localStorage.setItem('layout-config', JSON.stringify(config));
+                } catch (error) {
+                    console.error('No se pudo guardar layout-config en localStorage:', error);
+                }
             }
         });
 
