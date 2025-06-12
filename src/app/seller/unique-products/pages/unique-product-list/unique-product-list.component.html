@@ -1,0 +1,91 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="" icon="pi pi-plus" severity="secondary" class="mr-2" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="state().data?.data || []"
+    [rows]="state().limit"
+    [loading]="state().loading"
+    [paginator]="true"
+    [first]="first"
+    [totalRecords]="state().data?.meta?.total || 0"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    [tableStyle]="{ 'min-width': '100%' }"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Productos</h5>
+            <p-iconfield>
+                @if (!state().search) {
+                    <p-inputicon styleClass="pi pi-search" />
+                }
+                <input pInputText type="text" class="p-2 rounded-lg placeholder:pl-6" placeholder="Buscar..." [value]="state().search" (input)="onSearchChange($event)" />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 5%">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="Image" style="width: 15%">
+                Imagen
+                <p-sortIcon field="image" />
+            </th>
+            <th pSortableColumn="name" style="width: 20%">
+                Nombre
+                <p-sortIcon field="name" />
+            </th>
+            <th pSortableColumn="serialCode" style="width: 15%">
+                Serial
+                <p-sortIcon field="serialCode" />
+            </th>
+            <th pSortableColumn="price" style="width: 15%">
+                Precio
+                <p-sortIcon field="price" />
+            </th>
+            <th pSortableColumn="commission" style="width: 15%">
+                Comisión
+                <p-sortIcon field="commission" />
+            </th>
+            <th style="width: 15%">Acciones</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-product>
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="product" />
+            </td>
+            <td>
+                <img [src]="product.imagenUrl" alt="" />
+            </td>
+            <td>{{ product.productTitle }}</td>
+            <td>
+                {{ product.serialCode }}
+            </td>
+            <td>
+                {{ product.salePrice | currency: 'PEN' }}
+            </td>
+            <td>
+                {{ product.profit | currency: 'PEN' }}
+            </td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

@@ -47,8 +47,8 @@ export class AppMenu {
             label: 'UI Components',
             roles: [RoleName.SUPERADMIN, RoleName.SELLER],
             items: [
-                { label: 'Form Layout', roles: [RoleName.SUPERADMIN, RoleName.SELLER], icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] },
-                { label: 'Input', roles: [RoleName.SUPERADMIN, RoleName.SELLER], icon: 'pi pi-fw pi-check-square', routerLink: ['/uikit/input'] }
+                { label: 'Productos', roles: [RoleName.SUPERADMIN, RoleName.SELLER], icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] },
+                { label: 'Productos Unicos', roles: [RoleName.SUPERADMIN, RoleName.SELLER], icon: 'pi pi-fw pi-check-square', routerLink: ['/seller/unique-product'] }
             ]
         },
         {

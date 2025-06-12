@@ -13,12 +13,19 @@ export const appRoutes: Routes = [
         path: '',
         component: AppLayout,
         canActivate: [authGuard, roleGuard([RoleName.SUPERADMIN, RoleName.ADMIN, RoleName.SELLER, RoleName.RECRUITER, RoleName.STOCK, RoleName.MARKETING])],
-        children: [{ path: '', component: Dashboard }]
+        children: [
+            { path: '', component: Dashboard },
+            {
+                path: 'seller',
+                loadChildren: () => import('./app/seller/seller.routes').then((m) => m.sellerRoutes)
+            }
+        ]
     },
     {
         path: 'auth',
         loadChildren: () => import('./app/auth/auth.routes').then((m) => m.authRoutes)
     },
+
     { path: 'notfound', component: Notfound },
     { path: '**', redirectTo: '/notfound' }
 ];

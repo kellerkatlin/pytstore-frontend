@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { LoginResponse, RoleName, UserResponse } from '../models/user.interface';
 import { ApiResponse } from '../../core/models/api-response.interface';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +11,7 @@ import { ApiResponse } from '../../core/models/api-response.interface';
 export class AuthService {
     private readonly userSubject = new BehaviorSubject<UserResponse | null>(null);
     private readonly http = inject(HttpClient);
-    private readonly baseUrl = 'http://localhost:3000/auth';
+    private readonly baseUrl = `${environment.api}/auth`;
 
     public user$ = this.userSubject.asObservable();
     private initialized = false;

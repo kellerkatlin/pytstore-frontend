@@ -5,11 +5,11 @@ import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScroll
 import Aura from '@primeng/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
-import { authInterceptor } from './app/core/interceptors/auth.interceptor';
 import { authInitializer } from './app/core/initializers/auth.initializer';
 import { AuthService } from './app/auth/service/auth.service';
 import { errorInterceptor } from './app/core/interceptors/error.interceptor';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { authInterceptor } from './app/auth/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
