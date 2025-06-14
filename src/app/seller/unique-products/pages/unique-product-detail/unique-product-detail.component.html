@@ -1,0 +1,85 @@
+@let product = productDetail();
+<p-card header="{{ product?.productTitle }}" class="shadow-md rounded-2xl">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <!-- Carrusel de Imágenes -->
+        <p-carousel [value]="product?.images ?? []" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [showIndicators]="true" class="rounded-lg">
+            <ng-template pTemplate="item" let-image>
+                <img [src]="image" class="object-contain w-full rounded-lg h-72" />
+            </ng-template>
+        </p-carousel>
+
+        <!-- Información del producto -->
+        <div class="flex flex-col gap-4">
+            <div class="flex flex-wrap gap-2">
+                <p-chip label="{{ product?.brandName }}" class="font-semibold" />
+                <p-tag value="{{ product?.condition }}" severity="info" />
+                <p-tag value="" severity="warn">
+                    <div class="flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 size-6">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M16 7h1a2 2 0 0 1 2 2v.5a.5 .5 0 0 0 .5 .5a.5 .5 0 0 1 .5 .5v3a.5 .5 0 0 1 -.5 .5a.5 .5 0 0 0 -.5 .5v.5a2 2 0 0 1 -2 2h-2" />
+                            <path d="M8 7h-2a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h1" />
+                            <path d="M12 8l-2 4h3l-2 4" />
+                        </svg>
+                        <span class="text-sm">
+                            {{ product?.batteryHealth ? product?.batteryHealth + '%' : 'N/A' }}
+                        </span>
+                    </div>
+                </p-tag>
+            </div>
+
+            <div>
+                <div class="text-xl font-bold text-primary">Precio de venta:</div>
+                <div class="text-2xl text-green-500">{{ product?.salePrice | currency: 'PEN' }}</div>
+            </div>
+
+            <div>
+                <div class="text-xl font-bold text-primary">Ganancia:</div>
+                <div class="text-xl text-yellow-500">{{ product?.profit | currency: 'PEN' }}</div>
+            </div>
+
+            <div>
+                <div class="text-gray-500 text-md">Serial: {{ product?.serialCode }}</div>
+            </div>
+            @if (product?.batteryHealth) {
+                <div>
+                    <div class="font-semibold text-md">Batería: {{ product?.batteryHealth }}%</div>
+                </div>
+            }
+            @if (product?.description) {
+                <div>
+                    <div class="font-semibold text-md">Descripción:</div>
+                    <div class="text-sm text-gray-600">{{ product?.description }}</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <p-divider></p-divider>
+
+    <!-- Atributos adicionales -->
+    <h3 class="mb-2 text-lg font-semibold">Especificaciones:</h3>
+    @if (product?.attributes?.length) {
+        <p-table [value]="product?.attributes ?? []" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Atributo</th>
+                    <th>Valor</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-attr>
+                <tr>
+                    <td>{{ attr.name }}</td>
+                    <td>{{ attr.value }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    }
+    <p-divider></p-divider>
+
+    <div class="flex justify-end gap-3 mt-4">
+        <button pButton type="button" label="Agregar al carrito" icon="pi pi-shopping-cart" class="p-button-secondary" (click)="addToCart(product)"></button>
+
+        <button (click)="sellProduct(product)" pButton type="button" label="Vender" icon="pi pi-dollar" class="p-button-success"></button>
+    </div>
+</p-card>

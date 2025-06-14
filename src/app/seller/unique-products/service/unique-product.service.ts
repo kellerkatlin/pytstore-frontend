@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../core/models/api-response.interface';
 import { UniqueProductResponse } from '../models/unique-product.model';
 import { UniqueProductQueryDto } from '../models/unique-product-query.dto';
+import { UniqueProductDetailResponse } from '../models/unique-product-detail';
 
 @Injectable({
     providedIn: 'root'
@@ -23,5 +24,9 @@ export class UniqueProductService {
         }
 
         return this.http.get<ApiResponse<UniqueProductResponse>>(`${this.baseUrl}`, { params });
+    }
+
+    getUniqueProductDetail(id: string): Observable<ApiResponse<UniqueProductDetailResponse>> {
+        return this.http.get<ApiResponse<UniqueProductDetailResponse>>(`${this.baseUrl}/${id}`);
     }
 }

@@ -10,6 +10,7 @@ import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
+import { Router } from '@angular/router';
 
 interface UniqueProductState {
     loading: boolean;
@@ -41,6 +42,7 @@ export class UniqueProductListComponent implements OnInit {
 
     private readonly uniqueProductService = inject(UniqueProductService);
     private readonly messageService = inject(MessageService);
+    private readonly router = inject(Router);
 
     ngOnInit(): void {
         this.loadProducts();
@@ -112,5 +114,9 @@ export class UniqueProductListComponent implements OnInit {
             page: 1
         }));
         this.loadProducts();
+    }
+
+    onProductDetail(productId: string) {
+        this.router.navigate(['/seller/unique-product', productId]);
     }
 }
