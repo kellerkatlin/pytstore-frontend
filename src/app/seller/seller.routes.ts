@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AppLayout } from '../layout/component/app.layout';
 import { Dashboard } from '../pages/dashboard/dashboard';
 
 export const sellerRoutes: Routes = [
@@ -15,5 +14,9 @@ export const sellerRoutes: Routes = [
     {
         path: 'unique-product',
         loadChildren: () => import('./unique-products/unique-product.routes').then((m) => m.uniqueProductRoutes)
+    },
+    {
+        path: 'sales',
+        loadChildren: () => import('./sales/sales.routes').then((m) => m.salesRoutes)
     }
 ];
