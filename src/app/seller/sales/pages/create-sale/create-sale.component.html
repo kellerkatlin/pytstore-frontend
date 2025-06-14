@@ -1,0 +1,50 @@
+<div class="flex flex-col gap-6">
+    <!-- Productos -->
+    <p-card header="Productos seleccionados" class="shadow rounded-xl">
+        <p-table [value]="products()" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Imagen</th>
+                    <th>Producto</th>
+                    <th>Serial</th>
+                    <th>Precio</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td><img [src]="product.images[0]" class="h-20 rounded" /></td>
+                    <td>{{ product.productTitle }}</td>
+                    <td>{{ product.serialCode }}</td>
+                    <td class="text-green-500">{{ product.salePrice | currency: 'PEN' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+
+    <!-- Formulario de venta -->
+    <p-card header="Datos de la venta" class="shadow rounded-xl">
+        <form [formGroup]="saleForm" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <!-- Cliente -->
+            <div class="col-span-2 font-semibold">Datos del cliente</div>
+            <input pInputText formControlName="customerName" placeholder="Nombre completo*" />
+            <input pInputText formControlName="customerPhone" placeholder="Celular*" />
+            <input pInputText formControlName="customerEmail" placeholder="Email*" />
+
+            <!-- Dirección -->
+            <div class="col-span-2 font-semibold">Dirección</div>
+            <input pInputText formControlName="addressLine" placeholder="Dirección*" />
+            <input pInputText formControlName="district" placeholder="Distrito*" />
+            <input pInputText formControlName="city" placeholder="Ciudad*" />
+
+            <!-- Pago -->
+            <div class="col-span-2 font-semibold">Método de pago</div>
+            <p-dropdown [options]="paymentMethods" optionLabel="name" optionValue="id" formControlName="paymentMethodId" placeholder="Seleccionar método"></p-dropdown>
+        </form>
+    </p-card>
+
+    <!-- Botón -->
+    <div class="flex justify-end gap-3">
+        <button pButton type="button" label="Registrar venta" class="p-button-success" (click)="submit()"></button>
+    </div>
+</div>
