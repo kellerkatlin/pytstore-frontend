@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { UniqueProductResponse } from '../../models/unique-product.model';
 import { UniqueProductService } from '../../service/unique-product.service';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
@@ -11,10 +10,12 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { Router } from '@angular/router';
+import { PaginatedResponse } from '../../../../core/models/api-response.interface';
+import { UniqueProductResponse } from '../../../../admin/products/unique-products/models/unique-product.model';
 
 interface UniqueProductState {
     loading: boolean;
-    data: UniqueProductResponse | null;
+    data: PaginatedResponse<UniqueProductResponse> | null;
     page: number;
     limit: number;
     search: string;
@@ -23,6 +24,7 @@ interface UniqueProductState {
     condition?: string;
     functionality?: string;
 }
+
 @Component({
     selector: 'app-unique-product-list',
     standalone: true,
@@ -65,7 +67,7 @@ export class UniqueProductListComponent implements OnInit {
                 next: (res) => {
                     this.state.set({
                         ...this.state(),
-                        data: res.data,
+                        // data: res.data,
                         loading: false
                     });
                     if (this.state().data && this.state().data?.data.length === 0) {

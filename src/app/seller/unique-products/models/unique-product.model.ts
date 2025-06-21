@@ -1,5 +1,3 @@
-import { PaginatedResponse } from '../../../shared/models/pagination.model';
-
 export interface UniqueProductDto {
     id: number;
     productId: number;
@@ -15,5 +13,3 @@ export interface UniqueProductDto {
     createdAt: string; // ISO Date
     imagenUrl: string | null; // URL of the product image
 }
-
-export type UniqueProductResponse = PaginatedResponse<UniqueProductDto>;

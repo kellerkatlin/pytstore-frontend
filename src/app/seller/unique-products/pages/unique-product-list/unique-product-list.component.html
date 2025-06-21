@@ -10,7 +10,7 @@
 
 <p-table
     #dt
-    [value]="state().data?.data || []"
+    [value]="state().data?.data ?? []"
     [rows]="state().limit"
     [loading]="state().loading"
     [paginator]="true"
