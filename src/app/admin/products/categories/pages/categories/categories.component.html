@@ -1,0 +1,86 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="" icon="pi pi-plus" (onClick)="openNew()" severity="secondary" class="mr-2" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="list()"
+    [rows]="limit()"
+    [loading]="loading()"
+    [paginator]="true"
+    [first]="first"
+    [totalRecords]="total()"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    [tableStyle]="{ 'min-width': '100%' }"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} categorias"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Categorias</h5>
+            <p-iconfield>
+                @if (!search()) {
+                    <p-inputicon styleClass="pi pi-search" />
+                }
+                <input pInputText type="text" class="p-2 rounded-lg placeholder:pl-6" placeholder="Buscar..." [value]="search()" (input)="onSearchChange($event)" />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 5%">
+                <p-tableHeaderCheckbox />
+            </th>
+
+            <th pSortableColumn="name" style="width: 60%">
+                Nombre
+                <p-sortIcon field="name" />
+            </th>
+            <th pSortableColumn="status" style="width: 20%">
+                <div class="flex items-center justify-center">
+                    Estado
+                    <p-sortIcon field="status" />
+                </div>
+            </th>
+
+            <th style="width: 20%"><p class="text-center">Acciones</p></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-category>
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="category" />
+            </td>
+
+            <td>{{ category.name }}</td>
+
+            <td>
+                <div class="flex items-center justify-center">
+                    <p-badge [value]="category.status" [severity]="category.status === 'ACTIVE' ? 'success' : 'warn'" />
+                </div>
+            </td>
+
+            <td>
+                <div class="flex items-center justify-center gap-1">
+                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (onClick)="onEdit(category.id)" />
+                    <p-button icon="pi pi-plus" pTooltip="Asignar Atributos" tooltipPosition="top" severity="info" [rounded]="true" [outlined]="true" (onClick)="onAssignAttributes(category.id)" />
+
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (onClick)="onDelete(category.id)" />
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<app-category-dialog />
+<app-assign-attribute-dialog />
