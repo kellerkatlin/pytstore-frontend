@@ -1,0 +1,97 @@
+<p-dialog [(visible)]="dialogOpen" [closable]="!loadingDialog()" [modal]="true" [style]="{ width: '45rem' }">
+    @if (loadingDialog()) {
+        <div class="grid grid-cols-2 gap-4 p-4">
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+        </div>
+        <div class="flex justify-end gap-2 p-4">
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+        </div>
+    } @else {
+        <ng-template #header> Vendedores </ng-template>
+        <ng-template #content>
+            <form [formGroup]="form" class="grid grid-cols-12 gap-x-4 gap-y-2 md:grid-cols-12">
+                <!-- Nombre -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="name" class="block mb-3 font-bold">Nombre</label>
+                    <input pInputText id="name" formControlName="name" class="w-full" />
+                    @if (form.controls.name.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">El nombre es requerido.</small>
+                    }
+                </div>
+
+                <!-- Teléfono -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="phone" class="block mb-3 font-bold">Teléfono</label>
+                    <input pInputText id="phone" formControlName="phone" class="w-full" />
+                </div>
+
+                <!-- Email -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="email" class="block mb-3 font-bold">Email</label>
+                    <input pInputText id="email" formControlName="email" class="w-full" />
+                    @if (form.controls.email.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">El email es requerido.</small>
+                    }
+                    @if (form.controls.email.errors?.['email'] && submitted()) {
+                        <small class="text-red-500">Formato de email inválido.</small>
+                    }
+                </div>
+
+                <!-- Contraseña -->
+                <div class="w-full col-span-12 md:col-span-6">
+                    <label for="password" class="block mb-3 font-bold">Contraseña</label>
+                    <p-password id="password" [toggleMask]="true" formControlName="password" inputStyleClass="w-full" styleClass="w-full" />
+                    @if (form.controls.password.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">La contraseña es requerida.</small>
+                    }
+                    @if (form.controls.password.errors?.['minlength'] && submitted()) {
+                        <small class="text-red-500">Debe tener al menos 6 caracteres.</small>
+                    }
+                </div>
+
+                <!-- RUC -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="ruc" class="block mb-3 font-bold">RUC</label>
+                    <input pInputText id="ruc" formControlName="ruc" class="w-full" />
+                    @if (form.controls.ruc.errors?.['pattern'] && submitted()) {
+                        <small class="text-red-500">Debe ser un RUC válido de 11 dígitos.</small>
+                    }
+                </div>
+
+                <!-- Razón Social -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="businessName" class="block mb-3 font-bold">Razón social</label>
+                    <input pInputText id="businessName" formControlName="businessName" class="w-full" />
+                </div>
+
+                <!-- Nombre de tienda -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="storeName" class="block mb-3 font-bold">Nombre comercial</label>
+                    <input pInputText id="storeName" formControlName="storeName" class="w-full" />
+                </div>
+
+                <!-- Descripción -->
+                <div class="col-span-12">
+                    <label for="description" class="block mb-3 font-bold">Descripción</label>
+                    <textarea pInputTextarea rows="3" id="description" formControlName="description" class="w-full"></textarea>
+                </div>
+
+                <!-- Logo URL -->
+                <div class="col-span-12">
+                    <label for="logoUrl" class="block mb-3 font-bold">Logo (URL)</label>
+                    <input pInputText id="logoUrl" formControlName="logoUrl" class="w-full" />
+                    @if (form.controls.logoUrl.errors?.['url'] && submitted()) {
+                        <small class="text-red-500">Debe ser una URL válida.</small>
+                    }
+                </div>
+            </form>
+        </ng-template>
+
+        <ng-template #footer>
+            <p-button label="Cancelar" (click)="close()" severity="secondary" />
+            <p-button [label]="saving() ? (selectedSeller() ? 'Actualizando…' : 'Guardando…') : selectedSeller() ? 'Actualizar' : 'Guardar'" [disabled]="saving()" (click)="submit()" [loading]="saving()" />
+        </ng-template>
+    }
+</p-dialog>

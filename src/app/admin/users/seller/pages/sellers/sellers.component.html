@@ -1,0 +1,81 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="" icon="pi pi-plus" (onClick)="openNew()" severity="secondary" class="mr-2" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="list()"
+    [rows]="limit()"
+    [loading]="loading()"
+    [paginator]="true"
+    [first]="first"
+    [totalRecords]="total()"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    [tableStyle]="{ 'min-width': '100%' }"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} vendedores"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Vendedores</h5>
+            <p-iconfield>
+                @if (!search()) {
+                    <p-inputicon styleClass="pi pi-search" />
+                }
+                <input pInputText type="text" class="p-2 rounded-lg placeholder:pl-6" placeholder="Buscar..." [value]="search()" (input)="onSearchChange($event)" />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th id="id" style="width: 5%">
+                <p-tableHeaderCheckbox />
+            </th>
+
+            <th id="doc" pSortableColumn="doc" style="width: 15%">
+                Documento
+                <p-sortIcon field="doc" />
+            </th>
+            <th id="name" pSortableColumn="name" style="width: 40%">
+                Nombre
+                <p-sortIcon field="name" />
+            </th>
+            <th id="email" pSortableColumn="email" style="width: 20%">
+                Email
+                <p-sortIcon field="email" />
+            </th>
+
+            <th id="action" style="width: 20%"><p class="text-center">Acciones</p></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-seller>
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="seller" />
+            </td>
+
+            <td>{{ seller.ruc ?? '--' }}</td>
+            <td>{{ seller.user?.name }}</td>
+            <td>{{ seller.user?.email }}</td>
+
+            <td>
+                <div class="flex items-center justify-center gap-1">
+                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (onClick)="onEdit(seller)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (onClick)="onDelete(seller.id)" />
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<app-seller-dialog />
