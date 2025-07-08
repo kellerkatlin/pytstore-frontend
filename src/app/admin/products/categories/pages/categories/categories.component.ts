@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -13,17 +12,14 @@ import { CategoryStore } from '../../service/category-store.service';
 import { CategoryDialogComponent } from '../../components/category-dialog/category-dialog.component';
 import { BadgeModule } from 'primeng/badge';
 import { TooltipModule } from 'primeng/tooltip';
-import { AssignAttributeDialogComponent } from '../../components/assign-attribute-dialog/assign-attribute-dialog.component';
-import { CategoryAtributeStore } from '../../service/categoryAttribute-store.service';
 
 @Component({
     selector: 'app-categories',
-    imports: [CommonModule, ProgressSpinnerModule, TooltipModule, ToolbarModule, TagModule, BadgeModule, IconFieldModule, InputIconModule, ButtonModule, TableModule, CategoryDialogComponent, AssignAttributeDialogComponent],
+    imports: [CommonModule, ProgressSpinnerModule, TooltipModule, ToolbarModule, TagModule, BadgeModule, IconFieldModule, InputIconModule, ButtonModule, TableModule, CategoryDialogComponent],
     templateUrl: './categories.component.html'
 })
 export class CategoriesComponent {
     private readonly store = inject(CategoryStore);
-    private readonly storeCategoryAttribute = inject(CategoryAtributeStore);
     private readonly confirmationService = inject(ConfirmationService);
     list = this.store.list;
     loading = this.store.loading;
@@ -43,10 +39,6 @@ export class CategoriesComponent {
 
     onEdit(categoryId: number) {
         this.store.openDialog(categoryId);
-    }
-
-    onAssignAttributes(categoryId: number) {
-        this.storeCategoryAttribute.openDialog(categoryId);
     }
 
     onPageChange(event: any) {

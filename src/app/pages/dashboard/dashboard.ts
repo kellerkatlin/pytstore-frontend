@@ -26,5 +26,7 @@ import { AuthService } from '../../auth/service/auth.service';
 export class Dashboard implements OnInit {
     private readonly authService = inject(AuthService);
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.authService.me();
+    }
 }

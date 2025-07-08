@@ -1,0 +1,102 @@
+<p-dialog [(visible)]="dialogOpen" [closable]="!loadingDialog()" [modal]="true" [style]="{ width: '45rem' }">
+    @if (loadingDialog()) {
+        <div class="grid grid-cols-2 gap-4 p-4">
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+        </div>
+        <div class="flex justify-end gap-2 p-4">
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+        </div>
+    } @else {
+        <p-toolbar styleClass="mb-6">
+            <ng-template #start>
+                <p-button label="" icon="pi pi-plus" (onClick)="openNew()" severity="secondary" class="mr-2" />
+            </ng-template>
+        </p-toolbar>
+
+        <p-table
+            #dt
+            [value]="list()"
+            [rows]="10"
+            [loading]="loading()"
+            [paginator]="true"
+            [tableStyle]="{ 'min-width': '100%' }"
+            [rowHover]="true"
+            dataKey="id"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} costos"
+            [showCurrentPageReport]="true"
+            [paginatorDropdownAppendTo]="'body'"
+            [rowsPerPageOptions]="[10, 20, 30]"
+        >
+            <ng-template #caption>
+                <div class="flex items-center justify-between">
+                    <h5 class="m-0">Costos</h5>
+                    <p-iconfield>
+                        <p-inputicon styleClass="pi pi-search" />
+                        <input pInputText type="text" class="p-2 rounded-lg placeholder:pl-6" placeholder="Buscar..." />
+                    </p-iconfield>
+                </div>
+            </ng-template>
+            <ng-template #header>
+                <tr>
+                    <th id="checkbox" style="width: 5%">
+                        <p-tableHeaderCheckbox />
+                    </th>
+                    <th id="image" pSortableColumn="image" style="width: 25%">
+                        Descripción
+                        <p-sortIcon field="image" />
+                    </th>
+                    <th id="name" pSortableColumn="name" style="width: 10%">
+                        Tipo
+                        <p-sortIcon field="name" />
+                    </th>
+
+                    <th id="price" pSortableColumn="price" style="width: 15%">
+                        Precio
+                        <p-sortIcon field="price" />
+                    </th>
+                    <th id="serialCode" pSortableColumn="serialCode" style="width: 10%">
+                        Imagen
+                        <p-sortIcon field="serialCode" />
+                    </th>
+
+                    <th id="acc" style="width: 15%">Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-cost>
+                <tr>
+                    <td>
+                        <p-tableCheckbox [value]="cost" />
+                    </td>
+
+                    <td>{{ cost.description }}</td>
+                    <td>
+                        {{ getCostTypeLabel(cost.type) }}
+                    </td>
+                    <td>
+                        {{ cost.amount | currency: 'S/.' }}
+                    </td>
+                    <td>
+                        <a [href]="cost.documentUrl" target="_blank" rel="noopener"> Ver </a>
+                    </td>
+
+                    <td>
+                        <div class="flex items-center justify-center gap-1">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" severity="info" (onClick)="onEdit(cost.id)" />
+
+                            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" severity="danger" [outlined]="true" (onClick)="onDelete(cost.id)" />
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    }
+</p-dialog>
+
+<app-cost-form-dialog />

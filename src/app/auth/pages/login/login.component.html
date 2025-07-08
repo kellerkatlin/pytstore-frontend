@@ -39,7 +39,7 @@
                             <label for="rememberme1">Remember me</label>
                         </div>
                     </div>
-                    <p-button label="Ingresar" (onClick)="login()" styleClass="w-full " routerLink="/"></p-button>
+                    <p-button [label]="loading ? 'Ingresando...' : 'Ingresar'" [loading]="loading" [disabled]="loading" (onClick)="login()" styleClass="w-full " routerLink="/"></p-button>
                 </div>
             </div>
         </div>

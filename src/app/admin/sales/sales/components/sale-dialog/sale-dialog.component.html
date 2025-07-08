@@ -1,0 +1,178 @@
+<p-dialog
+    [(visible)]="dialogOpen"
+    [closable]="!loadingDialog()"
+    [modal]="true"
+    [dismissableMask]="false"
+    [style]="{ width: '100vw', height: '100vh', margin: '0', top: '0' }"
+    [contentStyle]="{ height: 'calc(100vh - 110px)', overflow: 'auto', padding: '1rem' }"
+    [breakpoints]="{ '960px': '100vw', '640px': '100vw' }"
+    [baseZIndex]="10000"
+>
+    @if (loadingDialog()) {
+        <div class="grid grid-cols-2 gap-4 p-4">
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+        </div>
+        <div class="flex justify-end gap-2 p-4">
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+        </div>
+    } @else {
+        <ng-template #header> Venta </ng-template>
+        <ng-template #content>
+            <form [formGroup]="form">
+                <div class="md:flex w-full h-[70vh]">
+                    <div class="w-full px-3 mr-10 md:w-3/12">
+                        <div class="grid grid-cols-12 gap-x-4 gap-y-2 md:grid-cols-12">
+                            <div class="col-span-12 md:col-span-6">
+                                <label for="status" class="block mb-3 font-bold">Cliente</label>
+                                <p-dropdown
+                                    [options]="customers()"
+                                    [loading]="loadingCutomers()"
+                                    optionLabel="name"
+                                    formControlName="customerId"
+                                    optionValue="id"
+                                    (onShow)="onDropdownCustomer()"
+                                    placeholder="Selecciona un cliente..."
+                                    [filter]="true"
+                                    [showClear]="true"
+                                    appendTo="body"
+                                    filterPlaceholder="Buscar clientes..."
+                                    (onFilter)="onFilterCustomers($event)"
+                                    styleClass="w-full"
+                                    emptyMessage="No se encontraron resultados"
+                                />
+                            </div>
+                            <div class="col-span-12 md:col-span-6">
+                                <label for="status" class="block mb-3 font-bold">Vendedor</label>
+                                <p-dropdown
+                                    [options]="sellers()"
+                                    [loading]="loadingSellers()"
+                                    optionLabel="user.name"
+                                    formControlName="userId"
+                                    optionValue="user.id"
+                                    (onShow)="onDropdownSeller()"
+                                    placeholder="Selecciona un vendedores..."
+                                    [filter]="true"
+                                    [showClear]="true"
+                                    appendTo="body"
+                                    filterPlaceholder="Buscar vendedores..."
+                                    (onFilter)="onFilterSellers($event)"
+                                    styleClass="w-full"
+                                    emptyMessage="No se encontraron resultados"
+                                />
+                            </div>
+                            <div class="col-span-12 md:col-span-6">
+                                <label for="notes" class="block mb-3 font-bold">Nota</label>
+                                <input class="w-full" pInputText formControlName="notes" />
+                            </div>
+                        </div>
+                        <div class="w-full p-1 mt-16 overflow-auto h-80">
+                            <p-panel header="Items seleccionados">
+                                @if (selectedItems.length === 0) {
+                                    <p>No hay items agregados</p>
+                                } @else {
+                                    <div class="space-y-3">
+                                        @for (si of selectedItems; track $index) {
+                                            <div class="flex items-center justify-between p-2 rounded shadow">
+                                                <div>
+                                                    <p class="font-semibold">{{ si.name }}</p>
+                                                    <p class="text-xs text-gray-600">
+                                                        {{ si.type === 'UNIQUE' ? si.serialCode : si.sku }}
+                                                    </p>
+                                                </div>
+                                                <div class="flex items-center space-x-2">
+                                                    <button pButton type="button" icon="pi pi-minus" class="p-button-rounded p-button-text" (click)="decreaseQuantity(si)" [disabled]="si.quantity <= 1" aria-label="Disminuir"></button>
+
+                                                    <span class="inline-block w-8 text-sm font-semibold text-center">
+                                                        {{ si.quantity }}
+                                                    </span>
+
+                                                    <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-text" (click)="increaseQuantity(si)" [disabled]="si.quantity >= si.stock" aria-label="Aumentar"></button>
+
+                                                    <button pButton type="button" icon="pi pi-trash" class="p-button-danger p-button-rounded p-button-text" (click)="removeFromList(si)" aria-label="Eliminar"></button>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </p-panel>
+                        </div>
+                        <div class="flex justify-end pr-4 mt-4 text-sm font-semibold text-gray-700">Total ítems: {{ getTotalQuantity() }} — Total venta: {{ getTotalAmount() | currency: 'S/.' }}</div>
+                    </div>
+
+                    <div class="hidden md:flex">
+                        <p-divider layout="vertical" />
+                    </div>
+                    <div class="w-full px-3 mt-10 md:px-20 md:w-9/12 md:mt-0">
+                        <div class="flex items-center justify-between">
+                            <p-iconfield>
+                                @if (!search()) {
+                                    <p-inputicon styleClass="pi pi-search" />
+                                }
+                                <input pInputText type="text" class="p-2 rounded-lg placeholder:pl-6" placeholder="Buscar..." [value]="search()" (input)="onSearchChange($event)" />
+                            </p-iconfield>
+                        </div>
+                        <div class="flex flex-wrap h-[80%] overflow-y-auto">
+                            @for (item of products(); track $index) {
+                                <div class="w-full px-5 py-4 sm:w-1/2 lg:w-1/3">
+                                    <p-card class="flex flex-col h-full">
+                                        <!-- Imagen de producto -->
+                                        <ng-template #header>
+                                            <img src="{{ item.imageUrl }}" alt="{{ item.name }}" class="object-cover w-full h-32 rounded-lg" />
+                                        </ng-template>
+
+                                        <!-- Título -->
+                                        <ng-template #title>
+                                            <h2 class="text-xl font-semibold">{{ item.name }}</h2>
+                                        </ng-template>
+
+                                        <!-- Subheader: Serial/SKU y etiqueta de stock en variantes -->
+                                        <ng-template #subtitle>
+                                            <div class="flex flex-wrap items-center gap-2 mt-2">
+                                                <p-chip label="{{ item.type === 'UNIQUE' ? 'Serial: ' + item.serialCode : 'SKU: ' + item.sku }}" styleClass="px-2 py-1 text-xs bg-red-100 text-gray-800 rounded-full"></p-chip>
+
+                                                @if (item.type === 'VARIANT') {
+                                                    <p-tag value="Stock: {{ item.stock }}" severity="success" styleClass="px-2 py-1 rounded-full"></p-tag>
+                                                }
+                                            </div>
+                                        </ng-template>
+
+                                        <!-- Contenido: Precio -->
+                                        <ng-template pTemplate="content">
+                                            <div class="mt-4">
+                                                <span class="ml-1 text-lg text-primary">
+                                                    {{ item.salePrice | currency: 'S/.' }}
+                                                </span>
+                                            </div>
+                                        </ng-template>
+
+                                        <!-- Footer: Botón más info -->
+                                        <ng-template pTemplate="footer">
+                                            <div class="flex justify-end mt-auto space-x-2">
+                                                <!-- Botón “+” -->
+                                                <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-success p-button-text" (click)="addToList(item)" aria-label="Agregar"></button>
+
+                                                <!-- Botón info -->
+                                                <button pButton type="button" icon="pi pi-info-circle" class="p-button-rounded p-button-text p-button-info" (click)="showProductInfo(item)" aria-label="Más información"></button>
+                                            </div>
+                                        </ng-template>
+                                    </p-card>
+                                </div>
+                            }
+                        </div>
+
+                        <p-paginator [rows]="limit()" [totalRecords]="total()" [first]="first" (onPageChange)="onPageChange($event)"> </p-paginator>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+
+        <ng-template #footer>
+            <p-button label="Cancelar" (click)="close()" severity="secondary" />
+            <p-button [label]="saving() ? (selectedBrand() ? 'Actualizando…' : 'Guardando…') : selectedBrand() ? 'Actualizar' : 'Guardar'" [disabled]="saving()" (click)="submit()" [loading]="saving()" />
+        </ng-template>
+    }
+</p-dialog>
+
+<app-detail-product-dialog />

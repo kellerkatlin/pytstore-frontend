@@ -26,16 +26,25 @@
     <p-card header="Datos de la venta" class="shadow rounded-xl">
         <form [formGroup]="saleForm" class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <!-- Cliente -->
-            <div class="col-span-2 font-semibold">Datos del cliente</div>
-            <input pInputText formControlName="customerName" placeholder="Nombre completo*" />
-            <input pInputText formControlName="customerPhone" placeholder="Celular*" />
-            <input pInputText formControlName="customerEmail" placeholder="Email*" />
+            <div class="flex items-center justify-between col-span-2 font-semibold">
+                <span>Datos del cliente</span>
+                <button pButton type="button" icon="pi pi-plus" label="Nuevo Cliente" (click)="openCreateCustomer()"></button>
+            </div>
+
+            <!-- Autocomplete de búsqueda -->
+            <p-autoComplete [formControl]="customerControl" [suggestions]="customerSuggestions" (completeMethod)="searchCustomers($event)" field="name" [dropdown]="true" [minLength]="2" [forceSelection]="true" placeholder="Buscar cliente">
+            </p-autoComplete>
+
+            <!-- Campos rellenados (deshabilitados) -->
+            <input pInputText formControlName="customerName" placeholder="Nombre completo*" [disabled]="true" />
+            <input pInputText formControlName="customerPhone" placeholder="Celular*" [disabled]="true" />
+            <input pInputText formControlName="customerEmail" placeholder="Email*" [disabled]="true" />
 
             <!-- Dirección -->
             <div class="col-span-2 font-semibold">Dirección</div>
-            <input pInputText formControlName="addressLine" placeholder="Dirección*" />
-            <input pInputText formControlName="district" placeholder="Distrito*" />
-            <input pInputText formControlName="city" placeholder="Ciudad*" />
+            <input pInputText formControlName="addressLine" placeholder="Dirección*" [disabled]="true" />
+            <input pInputText formControlName="district" placeholder="Distrito*" [disabled]="true" />
+            <input pInputText formControlName="city" placeholder="Ciudad*" [disabled]="true" />
 
             <!-- Pago -->
             <div class="col-span-2 font-semibold">Método de pago</div>

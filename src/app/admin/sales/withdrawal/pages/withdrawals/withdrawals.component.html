@@ -1,0 +1,96 @@
+<div class="flex flex-col gap-4 p-4 md:flex-row">
+    <!-- Fecha inicio -->
+    <div class="col-span-12 md:col-span-3">
+        <label class="block mb-1 font-semibold">Desde</label>
+        <p-calendar [(ngModel)]="startDate" dateFormat="dd/mm/yy" (onSelect)="onFilterChange()" class="w-full" />
+    </div>
+
+    <!-- Fecha fin -->
+    <div class="col-span-12 md:col-span-3">
+        <label class="block mb-1 font-semibold">Hasta</label>
+        <p-calendar [(ngModel)]="endDate" dateFormat="dd/mm/yy" (onSelect)="onFilterChange()" class="w-full" />
+    </div>
+</div>
+
+<p-table
+    #dt
+    [value]="list()"
+    [rows]="limit()"
+    [loading]="loading()"
+    [paginator]="true"
+    [first]="first"
+    [totalRecords]="total()"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    [tableStyle]="{ 'min-width': '100%' }"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Solicitudes de retiro</h5>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th id="checkbox" style="width: 5%">
+                <p-tableHeaderCheckbox />
+            </th>
+
+            <th id="name" pSortableColumn="name" style="width: 20%">
+                Destinatario
+                <p-sortIcon field="name" />
+            </th>
+            <th id="mail" pSortableColumn="serialCode" style="width: 15%">
+                Correo
+                <p-sortIcon field="serialCode" />
+            </th>
+            <th id="price" pSortableColumn="price" style="width: 15%">
+                Monto
+                <p-sortIcon field="price" />
+            </th>
+
+            <th id="commission" pSortableColumn="commission" style="width: 15%">
+                Comisión
+                <p-sortIcon field="commission" />
+            </th>
+            <th id="status" pSortableColumn="status" style="width: 15%">
+                Estado
+                <p-sortIcon field="status" />
+            </th>
+            <th id="acc" style="width: 15%">Acciones</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-withdrawal>
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="withdrawal" />
+            </td>
+
+            <td>{{ withdrawal.user.name }}</td>
+            <td>
+                <a [href]="'https://mail.google.com/mail/?view=cm&fs=1&to=' + withdrawal.user.email" target="_blank" rel="noopener" class="text-blue-500 hover:underline">
+                    {{ withdrawal.user.email }}
+                </a>
+            </td>
+            <td>
+                {{ withdrawal.amount | currency: 'S/.' }}
+            </td>
+            <td>{{ withdrawal.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+                <div class="flex items-center justify-center"><p-badge [value]="getWithdrawalStatusLabel(withdrawal.status)" [severity]="getWithdrawalStatusSeverity(withdrawal.status)" /></div>
+            </td>
+            <td>
+                <div class="flex items-center justify-center gap-1">
+                    @if (withdrawal.status === 'PENDING') {
+                        <p-button icon="pi pi-check" pTooltip="Confirmar llegada" tooltipPosition="top" [rounded]="true" [outlined]="true" severity="success" (onClick)="approveWithdrawal(withdrawal.id)" />
+                        <p-button icon="pi pi-times" severity="danger" [rounded]="true" severity="danger" [outlined]="true" (onClick)="rejectWitdrawal(withdrawal.id)" />
+                    }
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

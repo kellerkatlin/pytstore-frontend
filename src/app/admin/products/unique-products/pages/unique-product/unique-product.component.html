@@ -1,0 +1,119 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="" icon="pi pi-plus" (onClick)="openNew()" severity="secondary" class="mr-2" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="list()"
+    [rows]="limit()"
+    [loading]="loading()"
+    [paginator]="true"
+    [first]="first"
+    [totalRecords]="total()"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    [tableStyle]="{ 'min-width': '100%' }"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Productos Unicos</h5>
+            <p-iconfield>
+                @if (!search()) {
+                    <p-inputicon styleClass="pi pi-search" />
+                }
+                <input pInputText type="text" class="p-2 rounded-lg placeholder:pl-6" placeholder="Buscar..." [value]="search()" (input)="onSearchChange($event)" />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th id="checkbox" style="width: 5%">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th id="image" pSortableColumn="image" style="width: 15%">
+                Imagen
+                <p-sortIcon field="image" />
+            </th>
+            <th id="name" pSortableColumn="name" style="width: 20%">
+                Nombre
+                <p-sortIcon field="name" />
+            </th>
+            <th id="serialCode" pSortableColumn="serialCode" style="width: 15%">
+                Serial
+                <p-sortIcon field="serialCode" />
+            </th>
+            <th id="price" pSortableColumn="price" style="width: 15%">
+                Precio
+                <p-sortIcon field="price" />
+            </th>
+
+            <th id="commission" pSortableColumn="commission" style="width: 15%">
+                Comisión
+                <p-sortIcon field="commission" />
+            </th>
+            <th id="status" pSortableColumn="status" style="width: 15%">
+                Estado
+                <p-sortIcon field="status" />
+            </th>
+            <th id="acc" style="width: 15%">Acciones</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-product>
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="product" />
+            </td>
+            <td>
+                <img [src]="product.imageUrl" alt="" />
+            </td>
+            <td>{{ product.productTitle }}</td>
+            <td>
+                {{ product.serialCode }}
+            </td>
+            <td>
+                {{ product.salePrice | currency: 'PEN' }}
+            </td>
+            <td>
+                {{ product.profit | currency: 'PEN' }}
+            </td>
+            <td>
+                <p-tag [value]="product.status" [severity]="getStatusSeverity(product.status)" class="text-sm"></p-tag>
+            </td>
+            <td>
+                <div class="flex items-center justify-center gap-1">
+                    @if (product.status === 'NOT_AVAILABLE') {
+                        <p-button icon="pi pi-dollar" [rounded]="true" [outlined]="true" severity="success" (onClick)="onPay(product)" />
+                    }
+
+                    @if (product.status === 'ORDERED') {
+                        <p-button icon="pi pi-check-circle" pTooltip="Confirmar llegada" tooltipPosition="top" [rounded]="true" [outlined]="true" severity="success" (onClick)="confirmArrival(product.id)" />
+                    }
+
+                    <p-button icon="pi pi-eye" [rounded]="true" [outlined]="true" (onClick)="onProductDetail(product.id)" />
+                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" severity="info" (onClick)="onEdit(product.id)" />
+                    @if (product.status === 'IN_STOCK') {
+                        <p-button icon="pi pi-plus" pInputText pTooltip="Gastos extras" tooltipPosition="top" [rounded]="true" [outlined]="true" severity="info" (onClick)="onCosts(product.id)" />
+                    }
+
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" severity="danger" [outlined]="true" (onClick)="remove(product.id)" />
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<app-unique-product-dialog />
+<app-purchase-unique-product-dialog />
+
+<app-cost-detail-dialog />

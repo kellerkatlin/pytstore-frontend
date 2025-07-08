@@ -14,7 +14,6 @@ export class AuthService {
     private readonly baseUrl = `${environment.api}/auth`;
 
     public user$ = this.userSubject.asObservable();
-    private initialized = false;
 
     get currentUser(): UserResponse | null {
         const user = this.userSubject.value;
@@ -23,20 +22,15 @@ export class AuthService {
 
     login(email: string, password: string): Observable<UserResponse> {
         return this.http.post<ApiResponse<LoginResponse>>(`${this.baseUrl}/login-user`, { email, password }).pipe(
-            switchMap(() => this.me()), // usa la cookie
-            map((res) => res.data) // ← ya actualiza userSubject dentro de me()
+            switchMap(() => this.me()),
+            map((res) => res.data)
         );
     }
 
     me(): Observable<ApiResponse<UserResponse>> {
-        if (this.initialized) {
-            return of({ data: this.currentUser } as ApiResponse<UserResponse>);
-        }
-
         return this.http.get<ApiResponse<UserResponse>>(`${this.baseUrl}/me`).pipe(
-            tap((user) => {
-                this.userSubject.next(user.data);
-                this.initialized = true;
+            tap((res) => {
+                this.userSubject.next(res.data);
             }),
             catchError(() => {
                 this.userSubject.next(null);

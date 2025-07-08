@@ -1,0 +1,33 @@
+@let selectedProductInfo = productDetail();
+<p-dialog [dismissableMask]="true" [modal]="true" header="Detalle del Producto" [(visible)]="displayInfoDialog" [modal]="true" [style]="{ width: '500px' }" [closable]="true" (onHide)="close()">
+    <ng-template #content>
+        @if (selectedProductInfo) {
+            <div>
+                <img src="{{ selectedProductInfo.imageUrl }}" alt="{{ selectedProductInfo.name }}" class="object-cover w-full h-48 mb-4 rounded-lg" />
+                <h3 class="mb-2 text-lg font-bold">{{ selectedProductInfo.name }}</h3>
+                <p><strong>Tipo:</strong> {{ selectedProductInfo.type }}</p>
+                <p>
+                    <strong>
+                        {{ selectedProductInfo.type === 'UNIQUE' ? 'Serial:' : 'SKU:' }}
+                    </strong>
+                    {{ selectedProductInfo.type === 'UNIQUE' ? selectedProductInfo.serialCode : selectedProductInfo.sku }}
+                </p>
+                <p>
+                    <strong>Precio:</strong>
+                    {{ selectedProductInfo.salePrice | currency: 'S/.' }}
+                </p>
+
+                @if (selectedProductInfo.attributes.length) {
+                    <div class="mt-3">
+                        <strong>Atributos:</strong>
+                        <ul class="list-disc list-inside">
+                            @for (attr of selectedProductInfo.attributes; track $index) {
+                                <li>{{ attr.name }}: {{ attr.value }}</li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        }
+    </ng-template>
+</p-dialog>

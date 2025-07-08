@@ -1,0 +1,71 @@
+<p-dialog [(visible)]="dialogOpen" [closable]="!loadingDialog()" [modal]="true" [style]="{ width: '45rem' }">
+    @if (loadingDialog()) {
+        <div class="grid grid-cols-2 gap-4 p-4">
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+        </div>
+        <div class="flex justify-end gap-2 p-4">
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+        </div>
+    } @else {
+        <ng-template #header> Gasto </ng-template>
+        <ng-template #content>
+            <form [formGroup]="form" class="grid grid-cols-12 gap-x-4 gap-y-2 md:grid-cols-12">
+                <div class="col-span-12 md:col-span-6">
+                    <label for="taxType" class="block mb-3 font-bold">Tipos</label>
+                    <p-select [options]="costTypes" class="w-full" formControlName="type" optionLabel="label" optionValue="value" />
+                </div>
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="amount" class="block mb-3 font-bold">Cantidad</label>
+                    <input class="w-full" pInputText type="number" formControlName="amount" />
+                </div>
+                <div class="col-span-12">
+                    <label for="description" class="block mb-3 font-bold">Descripción</label>
+                    <textarea pInputTextarea formControlName="description" class="w-full" rows="3"></textarea>
+                </div>
+
+                <!-- Sección documentos -->
+                <div class="col-span-12">
+                    <label for="document" class="block mt-4 mb-2 font-bold">Documento</label>
+
+                    <p-fileUpload name="document" mode="basic" accept="image/*,application/pdf" [auto]="true" customUpload="true" (uploadHandler)="onDocumentSelected($event)" chooseLabel="Seleccionar archivo" class="mb-3"></p-fileUpload>
+
+                    @if (documentFile || documentPreview) {
+                        <div class="relative w-40 h-40 p-2 border-2 border-dashed rounded-md">
+                            <!-- Vista previa para imágenes -->
+                            @if (documentPreview) {
+                                <img [src]="documentPreview" alt="Vista previa" class="object-cover w-full h-full rounded" />
+                                <button pButton label="Ver" icon="pi pi-eye" class="mt-2 p-button-sm p-button-secondary" (click)="openPdfPreview()" type="button"></button>
+                            }
+
+                            <!-- Indicador PDF si no es imagen -->
+                            @if (!documentPreview) {
+                                <div class="flex flex-col items-center justify-center w-full h-full">
+                                    <i class="text-4xl text-red-500 pi pi-file-pdf"></i>
+                                    <span class="mt-2 text-xs text-gray-600">PDF seleccionado</span>
+
+                                    <button pButton label="Ver" icon="pi pi-eye" class="mt-2 p-button-sm p-button-secondary" (click)="openPdfPreview()" type="button"></button>
+                                </div>
+                            }
+
+                            <!-- Botón eliminar -->
+                            <button pButton icon="pi pi-times" class="absolute top-0 right-0 ml-4 p-button-sm p-button-rounded p-button-danger" type="button" (click)="removeDocument()"></button>
+                        </div>
+                    }
+                </div>
+            </form>
+        </ng-template>
+
+        <ng-template #footer>
+            <p-button label="Cancelar" (click)="close()" severity="secondary" />
+            <p-button [label]="saving() ? (costId() ? 'Actualizando...' : 'Guardando...') : !costId() ? 'Guardar' : 'Actualizar'" (click)="submit()" [loading]="saving()" />
+        </ng-template>
+    }
+</p-dialog>

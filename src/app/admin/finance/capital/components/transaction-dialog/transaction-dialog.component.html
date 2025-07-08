@@ -1,0 +1,66 @@
+<p-dialog [(visible)]="dialogOpen" [closable]="!loadingDialog()" [modal]="true" [style]="{ width: '45rem' }">
+    @if (loadingDialog()) {
+        <div class="grid grid-cols-2 gap-4 p-4">
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+        </div>
+        <div class="flex justify-end gap-2 p-4">
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+        </div>
+    } @else {
+        <ng-template #header> Transaccion </ng-template>
+        <ng-template #content>
+            <form [formGroup]="form" class="grid grid-cols-12 gap-x-4 gap-y-2 md:grid-cols-12">
+                <div class="col-span-12 md:col-span-6">
+                    <label for="type" class="block mb-3 font-bold">Tipo de transacción</label>
+                    <p-select appendTo="body" formControlName="type" [options]="capitalTypes" optionLabel="label" optionValue="value" class="w-full" />
+                    @if (form.controls.type.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">El tipo es requerido.</small>
+                    }
+                </div>
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="account" class="block mb-3 font-bold">Cuenta</label>
+                    <p-select appendTo="body" formControlName="account" [options]="accountOptions" optionLabel="label" optionValue="value" class="w-full" />
+                    @if (form.controls.account.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">La cuenta es requerida.</small>
+                    }
+                </div>
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="referenceType" class="block mb-3 font-bold">Tipo de referencia</label>
+                    <p-select appendTo="body" formControlName="referenceType" [options]="referenceTypes" optionLabel="label" optionValue="value" class="w-full" />
+                    @if (form.controls.referenceType.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">El tipo de referencia es requerido.</small>
+                    }
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                    <label class="block mb-3 font-bold">Fecha de la transacción</label>
+                    <p-calendar formControlName="createdAt" appendTo="body" inputId="createdAt" [showIcon]="true" class="w-full" />
+                </div>
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="amount" class="block mb-3 font-bold">Monto</label>
+                    <input type="number" class="w-full" pInputText formControlName="amount" />
+                    @if (form.controls.amount.errors && submitted()) {
+                        <small class="text-red-500">Monto inválido.</small>
+                    }
+                </div>
+
+                <div class="col-span-12">
+                    <label for="description" class="block mb-3 font-bold">Descripción</label>
+                    <textarea rows="3" class="w-full" pInputTextarea formControlName="description"></textarea>
+                    @if (form.controls.description.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">La descripción es requerida.</small>
+                    }
+                </div>
+            </form>
+        </ng-template>
+
+        <ng-template #footer>
+            <p-button label="Cancelar" (click)="close()" severity="secondary" />
+            <p-button [label]="saving() ? 'Guardando...' : 'Guardar'" [disabled]="saving()" (click)="submit()" [loading]="saving()" />
+        </ng-template>
+    }
+</p-dialog>

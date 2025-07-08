@@ -1,0 +1,113 @@
+<p-dialog [(visible)]="dialogOpen" [closable]="!loadingDialog()" [modal]="true" [style]="{ width: '45rem' }">
+    @if (loadingDialog()) {
+        <div class="grid grid-cols-2 gap-4 p-4">
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+        </div>
+        <div class="flex justify-end gap-2 p-4">
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+        </div>
+    } @else {
+        <ng-template #header> Clientes </ng-template>
+        <ng-template #content>
+            <form [formGroup]="form" class="grid grid-cols-12 gap-x-4 gap-y-2 md:grid-cols-12">
+                <div class="col-span-12 md:col-span-6">
+                    <label class="block mb-3 font-bold">Tipo de cliente</label>
+                    <p-select
+                        class="w-full"
+                        formControlName="customerType"
+                        [options]="[
+                            { label: 'Persona natural', value: 'NATURAL' },
+                            { label: 'Persona jurídica', value: 'JURIDICAL' }
+                        ]"
+                        appendTo="body"
+                    />
+                </div>
+
+                @switch (form.controls.customerType.value) {
+                    @case ('NATURAL') {
+                        <div class="col-span-12 md:col-span-6">
+                            <label for="dni" class="block mb-3 font-bold">DNI</label>
+                            <input class="w-full" pInputText formControlName="dni" />
+                            @if (form.controls.dni.invalid && form.controls.dni.touched) {
+                                <small class="text-red-500">DNI inválido (8 dígitos numéricos)</small>
+                            }
+                        </div>
+                    }
+                    @case ('JURIDICAL') {
+                        <div class="col-span-12 md:col-span-6">
+                            <label for="ruc" class="block mb-3 font-bold">RUC</label>
+                            <input class="w-full" pInputText formControlName="ruc" />
+                            @if (form.controls.ruc.invalid && form.controls.ruc.touched) {
+                                <small class="text-red-500">RUC inválido (11 dígitos numéricos)</small>
+                            }
+                        </div>
+                    }
+                }
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="name" class="block mb-3 font-bold">Nombre</label>
+                    <input class="w-full" pInputText formControlName="name" />
+                    @if (form.controls.name.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">El nombre es requerido.</small>
+                    }
+                </div>
+
+                <!-- Teléfono -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="phone" class="block mb-3 font-bold">Teléfono</label>
+                    <input class="w-full" pInputText formControlName="phone" />
+                    @if (form.controls.phone.errors?.['required'] && submitted()) {
+                        <small class="text-red-500">El teléfono es requerido.</small>
+                    }
+                </div>
+
+                <!-- Email -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="email" class="block mb-3 font-bold">Email</label>
+                    <input class="w-full" pInputText formControlName="email" />
+                    @if (form.controls.email.errors?.['email'] && submitted()) {
+                        <small class="text-red-500">Formato de email inválido.</small>
+                    }
+                </div>
+
+                <!-- Dirección -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="addressLine" class="block mb-3 font-bold">Dirección</label>
+                    <input class="w-full" pInputText [value]="form.controls.addresses.value[0].addressLine" />
+                </div>
+                <!-- Dirección única (addresses[0]) -->
+                @for (addr of addresses.controls; track $index) {
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="block mb-3 font-bold">Dirección</label>
+                        <input class="w-full" pInputText [formControl]="getFormControl(addr, 'addressLine')" />
+                    </div>
+
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="block mb-3 font-bold">Departamento</label>
+                        <input class="w-full" pInputText [formControl]="getFormControl(addr, 'department')" />
+                    </div>
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="block mb-3 font-bold">Provincia</label>
+                        <input class="w-full" pInputText [formControl]="getFormControl(addr, 'province')" />
+                    </div>
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="block mb-3 font-bold">Distrito</label>
+                        <input class="w-full" pInputText [formControl]="getFormControl(addr, 'district')" />
+                    </div>
+
+                    <div class="col-span-12">
+                        <label class="block mb-3 font-bold">Referencia</label>
+                        <textarea class="w-full" rows="3" pTextarea [formControl]="getFormControl(addr, 'reference')"></textarea>
+                    </div>
+                }
+            </form>
+        </ng-template>
+
+        <ng-template #footer>
+            <p-button label="Cancelar" (click)="close()" severity="secondary" />
+            <p-button [label]="saving() ? (selectedCustomer() ? 'Actualizando…' : 'Guardando…') : selectedCustomer() ? 'Actualizar' : 'Guardar'" [disabled]="saving()" (click)="submit()" [loading]="saving()" />
+        </ng-template>
+    }
+</p-dialog>

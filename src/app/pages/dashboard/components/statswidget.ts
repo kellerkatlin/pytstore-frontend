@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
     standalone: true,
     selector: 'app-stats-widget',
     imports: [CommonModule],
-    template: `<div class="col-span-12 lg:col-span-6 xl:col-span-3">
+    template: ` <div class="col-span-12 lg:col-span-6 xl:col-span-3">
             <div class="card mb-0">
                 <div class="flex justify-between mb-4">
                     <div>

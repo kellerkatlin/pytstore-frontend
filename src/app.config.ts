@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
@@ -14,7 +14,7 @@ import { authInterceptor } from './app/auth/interceptors/auth.interceptor';
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
-        provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
+        provideHttpClient(withFetch(), withInterceptorsFromDi(), withInterceptors([errorInterceptor, authInterceptor])),
         MessageService,
         ConfirmationService,
         provideAnimationsAsync(),

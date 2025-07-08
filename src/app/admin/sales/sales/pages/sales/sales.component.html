@@ -1,0 +1,116 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="" icon="pi pi-plus" (onClick)="openNew()" severity="secondary" class="mr-2" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" />
+    </ng-template>
+</p-toolbar>
+
+<div class="grid grid-cols-12 gap-4 mb-4">
+    <!-- Status -->
+    <div class="col-span-12 md:col-span-3">
+        <label class="block mb-1 font-semibold">Tipo</label>
+        <p-dropdown [options]="salesStatusOptions" optionLabel="label" optionValue="value" placeholder="Todos" (onChange)="onFilterChange()" [(ngModel)]="filters.status" appendTo="body" class="w-full" />
+    </div>
+
+    <!-- Fecha inicio -->
+    <div class="col-span-12 md:col-span-3">
+        <label class="block mb-1 font-semibold">Desde</label>
+        <p-calendar [(ngModel)]="filters.startDate" dateFormat="dd/mm/yy" (onSelect)="onFilterChange()" class="w-full" />
+    </div>
+
+    <!-- Fecha fin -->
+    <div class="col-span-12 md:col-span-3">
+        <label class="block mb-1 font-semibold">Hasta</label>
+        <p-calendar [(ngModel)]="filters.endDate" dateFormat="dd/mm/yy" (onSelect)="onFilterChange()" class="w-full" />
+    </div>
+</div>
+<p-table
+    #dt
+    [value]="list()"
+    [rows]="limit()"
+    [loading]="loading()"
+    [paginator]="true"
+    [first]="first"
+    [totalRecords]="total()"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    [tableStyle]="{ 'min-width': '100%' }"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} ventas"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Ventas</h5>
+            <p-iconfield>
+                @if (!search()) {
+                    <p-inputicon styleClass="pi pi-search" />
+                }
+                <input pInputText type="text" class="p-2 rounded-lg placeholder:pl-6" placeholder="Buscar..." [value]="search()" (input)="onSearchChange($event)" />
+            </p-iconfield>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th id="id" style="width: 5%">
+                <p-tableHeaderCheckbox />
+            </th>
+
+            <th id="name" pSortableColumn="name" style="width: 30%">
+                Nombre
+                <p-sortIcon field="name" />
+            </th>
+            <th id="name" pSortableColumn="name" style="width: 30%">
+                Vendedor
+                <p-sortIcon field="name" />
+            </th>
+            <th id="name" pSortableColumn="name" style="width: 30%">
+                Precio de venta
+                <p-sortIcon field="name" />
+            </th>
+            <th id="status" pSortableColumn="status" style="width: 20%">
+                <div class="flex items-center justify-center">
+                    Estado
+                    <p-sortIcon field="status" />
+                </div>
+            </th>
+
+            <th id="action" style="width: 20%"><p class="text-center">Acciones</p></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-sale>
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="sale" />
+            </td>
+
+            <td>{{ sale.customer.name }}</td>
+            <td>{{ sale.user.name }}</td>
+
+            <td>{{ sale.totalAmount | currency: 'S/.' }}</td>
+
+            <td>
+                <div class="flex items-center justify-center"><p-badge [value]="getSaleStatusLabel(sale.status)" [severity]="getSaleStatusSeverity(sale.status)" /></div>
+            </td>
+
+            <td>
+                <div class="flex items-center justify-center gap-1">
+                    @for (action of getSaleActions(sale.status); track action.label) {
+                        <p-button [icon]="action.icon" [severity]="action.severity" [pTooltip]="action.tooltip" tooltipPosition="top" [rounded]="true" [outlined]="true" (onClick)="action.onClick(sale.id)" />
+                    }
+                    <p-button icon="pi pi-times" severity="danger" pTooltip="Desaprobar Venta" tooltipPosition="top" [rounded]="true" [outlined]="true" (onClick)="rejectSale(sale.id)" />
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<app-sale-dialog />
+<app-sale-pay-dialog />
+<app-cost-form-dialog />

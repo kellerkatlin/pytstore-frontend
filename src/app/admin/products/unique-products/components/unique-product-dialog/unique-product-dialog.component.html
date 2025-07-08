@@ -1,0 +1,112 @@
+<p-dialog [(visible)]="dialogOpen" [closable]="!loadingDialog()" [modal]="true" [style]="{ width: '45rem' }">
+    @if (loadingDialog()) {
+        <div class="grid grid-cols-2 gap-4 p-4">
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+            <p-skeleton width="100%" height="2rem"></p-skeleton>
+        </div>
+        <div class="flex justify-end gap-2 p-4">
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+            <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+        </div>
+    } @else {
+        <ng-template #header> Producto único </ng-template>
+        <ng-template #content>
+            <form [formGroup]="form" class="grid grid-cols-12 gap-x-4 gap-y-2 md:grid-cols-12">
+                <div class="col-span-12 l md:col-span-6">
+                    <label for="serialCode" class="block mb-3 font-bold">Serial Code</label>
+                    <input class="w-full" pInputText formControlName="serialCode" />
+                </div>
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="taxType" class="block mb-3 font-bold">Impuesto</label>
+                    <p-select [options]="taxTypes" class="w-full" formControlName="taxType" optionLabel="label" optionValue="value" />
+                </div>
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="product" class="block mb-3 font-bold">Producto</label>
+                    <p-dropdown
+                        [options]="products()"
+                        [virtualScroll]="true"
+                        [virtualScrollItemSize]="50"
+                        [loading]="loadingProducts()"
+                        optionLabel="description"
+                        [disabled]="loadingAttributes()"
+                        optionValue="id"
+                        formControlName="productId"
+                        (onShow)="onDropdownOpen()"
+                        placeholder="Selecciona un atributo..."
+                        [filter]="true"
+                        [showClear]="true"
+                        filterPlaceholder="Buscar atributo..."
+                        (onFilter)="onFilterAttributes($event)"
+                        (onChange)="onProductSelected($event.value)"
+                        class="w-full"
+                    />
+                </div>
+                @for (group of attributeGroups; track $index) {
+                    <div class="col-span-12 md:col-span-6">
+                        <label for="name" class="block mb-3 font-bold">{{ group.name }}</label>
+                        <p-dropdown [options]="group.values" optionLabel="value" optionValue="valueId" [(ngModel)]="group.selectedValueId" [ngModelOptions]="{ standalone: true }" placeholder="Selecciona un valor" class="w-full" />
+                    </div>
+                }
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="gainType" class="block mb-3 font-bold">Tipo Ganancia</label>
+                    <p-select [options]="commissionTypes" (focus)="salePriceFocused = true" (blur)="salePriceFocused = false" class="w-full" formControlName="gainType" optionLabel="label" optionValue="value" />
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                    <label for="gainValue" class="block mb-3 font-bold">Ganancia</label>
+                    <input pInputText type="number" class="w-full" (focus)="onUserTyping('gainValue')" (input)="onUserTyping('gainValue')" (blur)="onUserTyping(null)" formControlName="gainValue" />
+                </div>
+
+                <div class="col-span-12 md:col-span-6">
+                    <label for="commissionType" class="block mb-3 font-bold">Tipo comisión</label>
+                    <p-select [options]="commissionTypes" class="w-full" formControlName="commissionType" optionLabel="label" optionValue="value" />
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                    <label for="commissionValue" class="block mb-3 font-bold">Comisión</label>
+                    <input pInputText type="number" class="w-full" formControlName="commissionValue" />
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                    <label for="salePrice" class="block mb-3 font-bold">Precio</label>
+                    <input class="w-full" pInputText (focus)="onUserTyping('salePrice')" (input)="onUserTyping('salePrice')" (blur)="onUserTyping(null)" type="number" formControlName="salePrice" />
+                </div>
+                <div class="col-span-12">
+                    <label for="description" class="block mb-3 font-bold">Descripción</label>
+                    <textarea pInputTextarea formControlName="description" class="w-full" rows="3"></textarea>
+                </div>
+
+                <!-- Sección de Imágenes -->
+                <div class="col-span-12">
+                    <label for="images" class="block mt-4 mb-2 font-bold">Imágenes</label>
+                    <input type="file" accept="image/*" multiple (change)="onExtraImagesSelected($event)" class="mb-3" />
+
+                    <div cdkDropList class="flex flex-wrap gap-3" (cdkDropListDropped)="onReorderImages($event)">
+                        <div *ngFor="let img of extraImagePreviews; let i = index" cdkDrag class="relative overflow-hidden border rounded shadow-md cursor-move group w-28 h-28">
+                            <img [src]="img.imageUrl" alt="Imagen" class="object-cover w-full h-full" />
+
+                            <!-- Botón eliminar -->
+                            <button type="button" class="absolute top-0 right-0 p-1 text-white transition bg-red-500 rounded-bl hover:bg-red-600" (click)="removeImage(i)">✕</button>
+
+                            <!-- Checkbox esPrincipal -->
+                            <div class="absolute bottom-0 left-0 w-full p-1 text-xs text-center text-white bg-black/60">
+                                <input type="radio" name="mainImage" [checked]="img.isPrimary" (change)="setPrimary(i)" />
+                                Principal
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+
+        <ng-template #footer>
+            <p-button label="Cancelar" (click)="close()" severity="secondary" />
+            <p-button [label]="saving() ? (productId() ? 'Actualizando...' : 'Guardando...') : !productId() ? 'Guardar' : 'Actualizar'" (click)="submit()" [loading]="saving()" />
+        </ng-template>
+    }
+</p-dialog>

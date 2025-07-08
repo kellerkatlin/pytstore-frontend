@@ -19,19 +19,21 @@ export class LoginComponent {
     private readonly router = inject(Router);
 
     email: string = '';
-
+    loading: boolean = false;
     password: string = '';
 
     checked: boolean = false;
 
     login(): void {
+        this.loading = true;
         this.authService.login(this.email, this.password).subscribe({
             next: (response) => {
-                console.log('Login successful:', response);
+                this.loading = false;
                 this.router.navigate(['/']);
             },
             error: (error) => {
                 console.error('Login failed:', error);
+                this.loading = false;
             }
         });
     }

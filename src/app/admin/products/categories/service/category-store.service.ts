@@ -2,7 +2,6 @@ import { Injectable, inject, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { CategoryService } from './category.service';
 import { CategoryRequest, CategoryResponse } from '../models/category.model';
-import { AttributeStore } from '../../attributes/service/attribute-store.service';
 import { AttributeResponse } from '../../attributes/models/attribute.model';
 
 @Injectable({ providedIn: 'root' })

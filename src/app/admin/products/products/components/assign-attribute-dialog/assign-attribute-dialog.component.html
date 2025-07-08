@@ -1,0 +1,73 @@
+<p-dialog [(visible)]="dialogOpen" [modal]="true" header="Atributos por Productos" [style]="{ width: '50rem' }">
+    <div class="flex flex-col gap-3 mb-4">
+        <label class="font-semibold">Agregar Atributo:</label>
+        <p-dropdown
+            [(ngModel)]="selectedAttribute"
+            [options]="listAttributes()"
+            [loading]="loadingAttributes()"
+            optionLabel="name"
+            (onShow)="onDropdownOpen()"
+            placeholder="Selecciona un atributo..."
+            [filter]="true"
+            [showClear]="true"
+            filterPlaceholder="Buscar atributo..."
+            (onChange)="onAssign($event.value)"
+            (onFilter)="onFilterAttributes($event)"
+            styleClass="w-full"
+            emptyMessage="No se encontraron resultados"
+        />
+    </div>
+    <p-table
+        #dt
+        [value]="list()"
+        [rows]="limit()"
+        [loading]="loading()"
+        [paginator]="true"
+        [first]="first"
+        [totalRecords]="total()"
+        [lazy]="true"
+        (onPage)="onPageChange($event)"
+        [tableStyle]="{ 'min-width': '100%' }"
+        [rowHover]="true"
+        dataKey="id"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} atributos"
+        [showCurrentPageReport]="true"
+    >
+        <ng-template #caption>
+            <div class="flex items-center justify-between">
+                <h5 class="m-0">Attributos Asignados</h5>
+                <p-iconfield>
+                    @if (!search()) {
+                        <p-inputicon styleClass="pi pi-search" />
+                    }
+                    <input pInputText type="text" class="p-2 rounded-lg placeholder:pl-6" placeholder="Buscar..." [value]="search()" (input)="onSearchChange($event)" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th pSortableColumn="name" style="width: 60%">
+                    Nombre
+                    <p-sortIcon field="name" />
+                </th>
+
+                <th style="width: 20%"><p class="text-center">Acciones</p></th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-productAttribute>
+            <tr>
+                <td>{{ productAttribute.name }}</td>
+
+                <td>
+                    <div class="flex items-center justify-center gap-1">
+                        <p-button icon="pi pi-plus" pTooltip="Asignar Valores" tooltipPosition="top" severity="info" [rounded]="true" [outlined]="true" (onClick)="onAssignValues(productAttribute.attributeId)" />
+
+                        <p-button icon="pi pi-trash" [rounded]="true" [outlined]="true" (onClick)="unassignProductAttribute(productAttribute.attributeId)" />
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<app-assign-values-attribute-dialog />

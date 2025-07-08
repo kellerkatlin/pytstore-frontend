@@ -15,6 +15,7 @@ export const appRoutes: Routes = [
         canActivate: [authGuard, roleGuard([RoleName.SUPERADMIN, RoleName.ADMIN, RoleName.SELLER, RoleName.RECRUITER, RoleName.STOCK, RoleName.MARKETING])],
         children: [
             { path: '', component: Dashboard },
+            { path: 'admin', loadChildren: () => import('./app/admin/admin.routes').then((m) => m.adminRoutes) },
             {
                 path: 'seller',
                 loadChildren: () => import('./app/seller/seller.routes').then((m) => m.sellerRoutes)

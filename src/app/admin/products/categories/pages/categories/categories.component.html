@@ -73,7 +73,6 @@
             <td>
                 <div class="flex items-center justify-center gap-1">
                     <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (onClick)="onEdit(category.id)" />
-                    <p-button icon="pi pi-plus" pTooltip="Asignar Atributos" tooltipPosition="top" severity="info" [rounded]="true" [outlined]="true" (onClick)="onAssignAttributes(category.id)" />
 
                     <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (onClick)="onDelete(category.id)" />
                 </div>
@@ -83,4 +82,3 @@
 </p-table>
 
 <app-category-dialog />
-<app-assign-attribute-dialog />

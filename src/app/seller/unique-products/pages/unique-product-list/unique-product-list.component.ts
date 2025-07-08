@@ -10,15 +10,15 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { Router } from '@angular/router';
-import { PaginatedResponse } from '../../../../core/models/api-response.interface';
-import { UniqueProductResponse } from '../../../../admin/products/unique-products/models/unique-product.model';
+import { UniqueProductDto } from '../../models/unique-product.model';
 
 interface UniqueProductState {
     loading: boolean;
-    data: PaginatedResponse<UniqueProductResponse> | null;
+    data: UniqueProductDto[] | [];
     page: number;
     limit: number;
     search: string;
+    total: number;
     sortBy: string;
     order: 'asc' | 'desc';
     condition?: string;
@@ -34,9 +34,10 @@ interface UniqueProductState {
 export class UniqueProductListComponent implements OnInit {
     state = signal<UniqueProductState>({
         loading: true,
-        data: null,
+        data: [],
         page: 1,
         limit: 10,
+        total: 0,
         search: '',
         sortBy: 'createdAt',
         order: 'desc'
@@ -67,10 +68,11 @@ export class UniqueProductListComponent implements OnInit {
                 next: (res) => {
                     this.state.set({
                         ...this.state(),
-                        // data: res.data,
-                        loading: false
+                        data: res.data.data,
+                        loading: false,
+                        total: res.data.meta.total
                     });
-                    if (this.state().data && this.state().data?.data.length === 0) {
+                    if (this.state().data && this.state().data?.length === 0) {
                         this.messageService.add({
                             severity: 'info',
                             summary: 'Sin productos',
