@@ -1,5 +1,5 @@
 export const environment = {
-    production: false,
-    api: 'http://localhost:3000', // backend NestJS local
+    production: true,
+    api: 'https://back.pyt-store.com/', // backend NestJS local
     imageBaseUrl: 'https://tu-cdn.com/'
 };
