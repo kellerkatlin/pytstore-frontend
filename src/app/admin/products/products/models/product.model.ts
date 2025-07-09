@@ -44,13 +44,15 @@ export interface ImageProduct {
 
 export interface ProductRequest {
     title: string;
-    description: string;
+    description: string | null;
     categoryId: number;
     status: STATUS;
     brandId: number;
     commissionType: CommissionType;
     commissionValue: number;
     images: { imageUrl: string; isPrimary?: boolean }[];
+    gainType: CommissionType;
+    gainValue: number;
 }
 
 export interface AttributesProduct {

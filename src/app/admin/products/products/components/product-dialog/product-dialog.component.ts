@@ -13,16 +13,21 @@ import { UploadService } from '../../../../../shared/services/upload.service';
 import { ProductRequest, STATUS } from '../../models/product.model';
 import { CommissionType } from '../../../unique-products/models/unique-product.model';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CategoryStore } from '../../../categories/service/category-store.service';
+import { BrandStore } from '../../../brands/service/brand-store.service';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
     selector: 'app-product-dialog',
-    imports: [Dialog, ButtonModule, SkeletonModule, DragDropModule, TextareaModule, SelectModule, NgFor, FormsModule, ReactiveFormsModule, InputTextModule],
+    imports: [Dialog, ButtonModule, DropdownModule, SkeletonModule, DragDropModule, TextareaModule, SelectModule, NgFor, FormsModule, ReactiveFormsModule, InputTextModule],
 
     templateUrl: './product-dialog.component.html'
 })
 export class ProductDialogComponent {
     private readonly store = inject(ProductStore);
     private readonly uploadService = inject(UploadService);
+    private readonly categoryStore = inject(CategoryStore);
+    private readonly brandStore = inject(BrandStore);
     fb = inject(NonNullableFormBuilder);
 
     // Imágenes
@@ -30,6 +35,13 @@ export class ProductDialogComponent {
     mainImagePreview: string | null = null;
     mainIsPrimary = true;
     submitted = signal(false);
+
+    categories = this.categoryStore.list;
+    loadingCategories = this.categoryStore.loading;
+    brands = this.brandStore.list;
+    loadingBrands = this.brandStore.loading;
+
+    productId = this.store.selectedProductId;
 
     extraImageFiles: File[] = [];
     extraImagePreviews: { id?: number; imageUrl: string; isPrimary: boolean }[] = [];
@@ -46,12 +58,14 @@ export class ProductDialogComponent {
         [key in keyof ProductRequest]: FormControl<ProductRequest[key]>;
     }> = this.fb.group({
         title: this.fb.control<string>('', [Validators.required]),
-        description: this.fb.control<string>('', [Validators.required]),
+        description: this.fb.control<string | null>(null),
         status: this.fb.control<STATUS>('ACTIVE', [Validators.required]),
         categoryId: this.fb.control<number>(0, [Validators.required]),
         brandId: this.fb.control<number>(0, [Validators.required]),
         commissionType: this.fb.control<CommissionType>('PERCENT', [Validators.required]),
         commissionValue: this.fb.control<number>(0, [Validators.required, Validators.min(0)]),
+        gainType: this.fb.control<CommissionType>('PERCENT'),
+        gainValue: this.fb.control<number>(0),
         images: this.fb.control<{ imageUrl: string; isPrimary?: boolean }[]>([])
     });
 
@@ -181,5 +195,24 @@ export class ProductDialogComponent {
     onReorderImages(event: CdkDragDrop<any[]>) {
         moveItemInArray(this.extraImagePreviews, event.previousIndex, event.currentIndex);
         moveItemInArray(this.extraImageFiles, event.previousIndex, event.currentIndex);
+    }
+
+    onDropdownCategory() {
+        this.categoryStore.loadList();
+    }
+
+    onFilterCategories(event: { filter: string }) {
+        const query = event.filter?.trim() ?? '';
+
+        this.categoryStore.onSearchChange(query);
+    }
+    onDropdownBrand() {
+        this.brandStore.loadList();
+    }
+
+    onFilterBrands(event: { filter: string }) {
+        const query = event.filter?.trim() ?? '';
+
+        this.brandStore.onSearchChange(query);
     }
 }

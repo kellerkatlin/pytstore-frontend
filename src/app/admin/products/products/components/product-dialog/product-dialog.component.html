@@ -27,6 +27,44 @@
                 </div>
 
                 <div class="col-span-12 md:col-span-6">
+                    <label for="status" class="block mb-3 font-bold">Categoria</label>
+                    <p-dropdown
+                        [options]="categories()"
+                        [loading]="loadingCategories()"
+                        optionLabel="name"
+                        formControlName="categoryId"
+                        optionValue="id"
+                        (onShow)="onDropdownCategory()"
+                        placeholder="Selecciona una categoria..."
+                        [filter]="true"
+                        [showClear]="true"
+                        appendTo="body"
+                        filterPlaceholder="Buscar categorias..."
+                        (onFilter)="onFilterCategories($event)"
+                        styleClass="w-full"
+                        emptyMessage="No se encontraron resultados"
+                    />
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                    <label for="status" class="block mb-3 font-bold">Marca</label>
+                    <p-dropdown
+                        [options]="brands()"
+                        [loading]="loadingBrands()"
+                        optionLabel="name"
+                        formControlName="brandId"
+                        optionValue="id"
+                        (onShow)="onDropdownBrand()"
+                        placeholder="Selecciona una marca..."
+                        [filter]="true"
+                        [showClear]="true"
+                        appendTo="body"
+                        filterPlaceholder="Buscar marcas..."
+                        (onFilter)="onFilterBrands($event)"
+                        styleClass="w-full"
+                        emptyMessage="No se encontraron resultados"
+                    />
+                </div>
+                <div class="col-span-12 md:col-span-6">
                     <label class="block mb-3 font-bold">Comisión</label>
                     <input pInputText type="number" class="w-full" formControlName="commissionValue" />
                 </div>
@@ -35,7 +73,14 @@
                     <label class="block mb-3 font-bold">Tipo comisión</label>
                     <p-select [options]="commissionTypes" class="w-full" formControlName="commissionType" optionLabel="label" optionValue="value" />
                 </div>
-
+                <div class="col-span-12 md:col-span-6">
+                    <label for="gainType" class="block mb-3 font-bold">Tipo Ganancia</label>
+                    <p-select [options]="commissionTypes" class="w-full" formControlName="gainType" optionLabel="label" optionValue="value" />
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                    <label for="gainValue" class="block mb-3 font-bold">Ganancia</label>
+                    <input pInputText type="number" class="w-full" formControlName="gainValue" />
+                </div>
                 <div class="col-span-12">
                     <label class="block mb-3 font-bold">Descripción</label>
                     <textarea pInputTextarea formControlName="description" class="w-full" rows="3"></textarea>
@@ -67,7 +112,7 @@
 
         <ng-template #footer>
             <p-button label="Cancelar" (click)="close()" severity="secondary" />
-            <p-button [label]="saving() ? (list() ? 'Actualizando...' : 'Guardando...') : list() ? 'Actualizar' : 'Guardar'" (click)="submit()" [loading]="saving()" />
+            <p-button [label]="saving() ? (productId() ? 'Actualizando...' : 'Guardando...') : productId() ? 'Actualizar' : 'Guardar'" (click)="submit()" [loading]="saving()" />
         </ng-template>
     }
 </p-dialog>

@@ -27,9 +27,19 @@ export class LoginComponent {
     login(): void {
         this.loading = true;
         this.authService.login(this.email, this.password).subscribe({
-            next: (response) => {
+            next: (user) => {
                 this.loading = false;
-                this.router.navigate(['/']);
+
+                switch (user.role) {
+                    case 'SUPERADMIN':
+                        this.router.navigate(['/']);
+                        break;
+                    case 'SELLER':
+                        this.router.navigate(['/seller/unique-product']);
+                        break;
+                    default:
+                        this.router.navigate(['/']);
+                }
             },
             error: (error) => {
                 console.error('Login failed:', error);

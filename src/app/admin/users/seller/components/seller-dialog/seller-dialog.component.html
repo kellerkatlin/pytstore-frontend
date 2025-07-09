@@ -53,7 +53,7 @@
 
                 <!-- RUC -->
                 <div class="col-span-12 md:col-span-6">
-                    <label for="ruc" class="block mb-3 font-bold">RUC</label>
+                    <label for="ruc" class="block mb-3 font-bold">RUC o DNI</label>
                     <input pInputText id="ruc" formControlName="ruc" class="w-full" />
                     @if (form.controls.ruc.errors?.['pattern'] && submitted()) {
                         <small class="text-red-500">Debe ser un RUC válido de 11 dígitos.</small>

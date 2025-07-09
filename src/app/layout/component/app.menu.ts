@@ -29,7 +29,7 @@ export class AppMenu {
         {
             label: 'Dashboard   ',
             roles: [RoleName.SUPERADMIN],
-            items: [{ label: 'Dashboard', roles: [RoleName.SUPERADMIN, RoleName.SELLER], icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
+            items: [{ label: 'Dashboard', roles: [RoleName.SUPERADMIN], icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
         },
         {
             label: 'Usuarios',

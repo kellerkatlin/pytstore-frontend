@@ -30,7 +30,7 @@ export class AttributeValueDialogComponent {
     form: FormGroup<{
         [key in keyof AttributeValueRequest]: FormControl<AttributeValueRequest[key]>;
     }> = this.fb.group({
-        value: this.fb.control<string>('', [Validators.required, Validators.minLength(3)])
+        value: this.fb.control<string>('', [Validators.required, Validators.minLength(1)])
     });
 
     private readonly syncFormEffect = effect(() => {

@@ -3,6 +3,7 @@ import { MessageService } from 'primeng/api';
 import { ProductService } from './product.service';
 import { ProductRequest, ProductResponse } from '../models/product.model';
 import { UploadService } from '../../../../shared/services/upload.service';
+import { CategoryStore } from '../../categories/service/category-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProductStore {
@@ -10,7 +11,6 @@ export class ProductStore {
     private readonly messageService = inject(MessageService);
     private readonly uploadService = inject(UploadService);
     private readonly imagesToDelete = signal<{ id: number; imageUrl: string }[]>([]);
-
     // Signals globales del módulo
     list = signal<ProductResponse[]>([]);
 

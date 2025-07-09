@@ -33,7 +33,7 @@ export class SellerDialogComponent {
         storeName: this.fb.control<string | null>(null),
         phone: this.fb.control<string | null>(null),
         businessName: this.fb.control<string | null>(null),
-        ruc: this.fb.control<string | null>(null, [Validators.minLength(11), Validators.maxLength(11), Validators.pattern(/^\d{11}$/)]),
+        ruc: this.fb.control<string | null>(null, [Validators.pattern(/^\d{8}$|^\d{11}$/)]),
         description: this.fb.control<string | null>(null),
         logoUrl: this.fb.control<string | null>(null)
     });
@@ -72,10 +72,10 @@ export class SellerDialogComponent {
             password: form.password ?? null,
             phone: form.phone === '' ? null : form.phone,
             name: form.name ?? '',
-            storeName: form.storeName ?? '',
-            businessName: form.businessName ?? '',
-            ruc: form.ruc ?? '',
-            description: form.description ?? '',
+            storeName: form.storeName ?? null,
+            businessName: form.businessName ?? null,
+            ruc: form.ruc ?? null,
+            description: form.description ?? null,
             logoUrl: form.logoUrl === '' ? null : form.logoUrl
         };
 
