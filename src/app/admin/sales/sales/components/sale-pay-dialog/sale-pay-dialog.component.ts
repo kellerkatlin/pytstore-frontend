@@ -39,6 +39,7 @@ export class SalePayDialogComponent {
     }> = this.fb.group({
         paymentMethodId: this.fb.control<number | null>(null, [Validators.required]),
         documentUrl: this.fb.control<string | null>(null)
+        
     });
 
     private readonly syncFormEffect = effect(() => {

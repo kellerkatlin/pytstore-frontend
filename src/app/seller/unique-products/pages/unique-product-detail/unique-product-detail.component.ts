@@ -10,10 +10,11 @@ import { ChipModule } from 'primeng/chip';
 import { CurrencyPipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
     selector: 'app-unique-product-detail',
-    imports: [CardModule, CarouselModule, ButtonModule, TagModule, DividerModule, ChipModule, CurrencyPipe, TableModule],
+    imports: [CardModule, DialogModule, CarouselModule, ButtonModule, TagModule, DividerModule, ChipModule, CurrencyPipe, TableModule],
     templateUrl: './unique-product-detail.component.html'
 })
 export class UniqueProductDetailComponent implements OnInit {
@@ -21,6 +22,7 @@ export class UniqueProductDetailComponent implements OnInit {
     private readonly uniqueProductService = inject(UniqueProductService);
     private readonly router = inject(Router);
     productDetail = signal<UniqueProductDetailResponse | null>(null);
+    zoomImage: boolean = false;
     ngOnInit(): void {
         this.route.paramMap.subscribe((params) => {
             const id = params.get('id');

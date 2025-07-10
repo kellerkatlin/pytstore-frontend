@@ -1,12 +1,19 @@
 @let product = productDetail();
 <p-card header="{{ product?.productTitle }}" class="shadow-md rounded-2xl">
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <!-- Carrusel de Imágenes -->
-        <p-carousel [value]="product?.images ?? []" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [showIndicators]="true" class="rounded-lg">
-            <ng-template pTemplate="item" let-image>
-                <img [src]="image" class="object-contain w-full rounded-lg h-72" />
-            </ng-template>
-        </p-carousel>
+        <div>
+            <!-- Carrusel de Imágenes -->
+            <p-carousel [value]="product?.images ?? []" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [showIndicators]="true" class="rounded-lg">
+                <ng-template pTemplate="item" let-image let-index="index">
+                    <img [src]="image" class="object-contain w-full rounded-lg h-72 cursor-zoom-in" (click)="zoomImage = image" />
+                </ng-template>
+            </p-carousel>
+
+            <!-- Imagen ampliada (modal) -->
+            <p-dialog [(visible)]="zoomImage" [modal]="true" [closable]="true" [dismissableMask]="true" [style]="{ width: 'auto' }" [contentStyle]="{ 'text-align': 'center', padding: '0' }" [baseZIndex]="10000">
+                <img [src]="zoomImage" alt="zoomed image" class="max-h-[80vh] w-auto object-contain" (click)="zoomImage = true" />
+            </p-dialog>
+        </div>
 
         <!-- Información del producto -->
         <div class="flex flex-col gap-4">
@@ -69,7 +76,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-attr>
                 <tr>
-                    <td>{{ attr.name }}</td>
+                    <td>{{ attr.attribute }}</td>
                     <td>{{ attr.value }}</td>
                 </tr>
             </ng-template>

@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment.prod';
 import { ApiResponse, ApiResponsePaginated } from '../../../../core/models/api-response.interface';
-import { CapitalTransactionQuery, CreateTransaction, TransactionResponse } from '../models/capital.mode';
+import { CapitalTransactionQuery, CreateTransaction, FinancialSummaryDto, TransactionResponse } from '../models/capital.mode';
 
 @Injectable({
     providedIn: 'root'
@@ -26,5 +26,9 @@ export class CapitalService {
 
     createTrasaction(body: CreateTransaction): Observable<void> {
         return this.http.post<void>(`${this.baseUrl}`, body);
+    }
+
+    getFinancialSummary(): Observable<ApiResponse<FinancialSummaryDto>> {
+        return this.http.get<ApiResponse<FinancialSummaryDto>>(`${this.baseUrl}/full-summary`);
     }
 }

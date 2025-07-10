@@ -40,3 +40,11 @@ export type CapitalSourceType = 'PURCHASE' | 'SALE' | 'RETURN' | 'WITHDRAWAL' | 
 export type CapitalAccountName = 'CASH' | 'INVENTORY' | 'COMMISSIONS';
 
 export type CapitalType = 'INJECTION' | 'PURCHASE_EXPENSE' | 'OPERATIONAL_EXPENSE' | 'SALE_PROFIT' | 'DEVOLUTION_COST' | 'WITHDRAWAL' | 'TRANSFER_IN' | 'TRANSFER_OUT';
+
+export interface FinancialSummaryDto {
+    capital: {
+        account: 'CASH' | 'INVENTORY' | 'COMMISSIONS';
+        total: number;
+    }[];
+    totalSales: number;
+}

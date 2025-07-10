@@ -1,3 +1,36 @@
+<div class="grid grid-cols-12 gap-4 mb-4">
+    @for (item of summary()?.capital; track item.account) {
+        <div class="col-span-12 md:col-span-3">
+            <p-card>
+                <ng-template pTemplate="title">
+                    {{ getAccountTypeLabel(item.account) }}
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <div
+                        class="text-2xl font-bold"
+                        [ngClass]="{
+                            'text-green-600': item.total >= 0,
+                            'text-red-500': item.total < 0
+                        }"
+                    >
+                        {{ item.total | currency: 'S/.' }}
+                    </div>
+                </ng-template>
+            </p-card>
+        </div>
+    }
+    <div class="col-span-12 md:col-span-3">
+        <p-card>
+            <ng-template pTemplate="title">Total Ventas</ng-template>
+            <ng-template pTemplate="content">
+                <div class="text-2xl font-bold text-blue-600">
+                    {{ summary()?.totalSales | currency: 'S/.' }}
+                </div>
+            </ng-template>
+        </p-card>
+    </div>
+</div>
+
 <p-toolbar styleClass="mb-6">
     <ng-template #start>
         <p-button label="" icon="pi pi-plus" (onClick)="openNew()" severity="secondary" class="mr-2" />

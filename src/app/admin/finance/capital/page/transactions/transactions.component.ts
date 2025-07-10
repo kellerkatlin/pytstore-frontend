@@ -16,9 +16,26 @@ import { CapitalAccountName, CapitalType, TransactionResponse } from '../../mode
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
+import { CardModule } from 'primeng/card';
 @Component({
     selector: 'app-transactions',
-    imports: [CommonModule, CalendarModule, FormsModule, DropdownModule, ProgressSpinnerModule, TooltipModule, ToolbarModule, TagModule, BadgeModule, IconFieldModule, InputIconModule, ButtonModule, TableModule, TransactionDialogComponent],
+    imports: [
+        CommonModule,
+        CardModule,
+        CalendarModule,
+        FormsModule,
+        DropdownModule,
+        ProgressSpinnerModule,
+        TooltipModule,
+        ToolbarModule,
+        TagModule,
+        BadgeModule,
+        IconFieldModule,
+        InputIconModule,
+        ButtonModule,
+        TableModule,
+        TransactionDialogComponent
+    ],
 
     templateUrl: './transactions.component.html'
 })
@@ -26,6 +43,7 @@ export class TransactionsComponent {
     private readonly store = inject(CapitalStore);
     private readonly confirmationService = inject(ConfirmationService);
 
+    summary = this.store.summary;
     list = this.store.list;
     loading = this.store.loading;
     page = this.store.page;
@@ -84,6 +102,7 @@ export class TransactionsComponent {
 
     ngOnInit() {
         this.store.loadList(true);
+        this.store.loadSummary();
     }
 
     openNew() {

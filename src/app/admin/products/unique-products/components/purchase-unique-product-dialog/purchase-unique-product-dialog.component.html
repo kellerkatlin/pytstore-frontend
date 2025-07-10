@@ -41,6 +41,36 @@
                     <label for="unitCost" class="block mb-2 font-bold">Costo Unitario</label>
                     <input pInputText type="number" class="w-full" [value]="unitCost" (input)="onCostChange($event)" />
                 </div>
+
+                <!-- Sección documentos -->
+                <div class="col-span-12 md:col-span-6">
+                    <label for="document" class="block mt-4 mb-2 font-bold">Documento</label>
+
+                    <p-fileUpload name="document" mode="basic" accept="image/*,application/pdf" [auto]="true" customUpload="true" (uploadHandler)="onDocumentSelected($event)" chooseLabel="Seleccionar archivo" class="mb-3"></p-fileUpload>
+
+                    @if (documentFile || documentPreview) {
+                        <div class="relative w-40 h-40 p-2 mt-3 border-2 border-dashed rounded-md">
+                            <!-- Vista previa para imágenes -->
+                            @if (documentPreview) {
+                                <img [src]="documentPreview" alt="Vista previa" class="object-cover w-full h-full rounded" />
+                                <button pButton label="Ver" icon="pi pi-eye" class="mt-2 p-button-sm p-button-secondary" (click)="openPdfPreview()" type="button"></button>
+                            }
+
+                            <!-- Indicador PDF si no es imagen -->
+                            @if (!documentPreview) {
+                                <div class="flex flex-col items-center justify-center w-full h-full">
+                                    <i class="text-4xl text-red-500 pi pi-file-pdf"></i>
+                                    <span class="mt-2 text-xs text-gray-600">PDF seleccionado</span>
+
+                                    <button pButton label="Ver" icon="pi pi-eye" class="mt-2 p-button-sm p-button-secondary" (click)="openPdfPreview()" type="button"></button>
+                                </div>
+                            }
+
+                            <!-- Botón eliminar -->
+                            <button pButton icon="pi pi-times" class="absolute top-0 right-0 ml-4 p-button-sm p-button-rounded p-button-danger" type="button" (click)="removeDocument()"></button>
+                        </div>
+                    }
+                </div>
             </form>
         </ng-template>
 

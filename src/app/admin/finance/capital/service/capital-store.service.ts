@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { CapitalTransactionQuery, CreateTransaction, TransactionResponse } from '../models/capital.mode';
+import { CapitalTransactionQuery, CreateTransaction, FinancialSummaryDto, TransactionResponse } from '../models/capital.mode';
 import { CapitalService } from './capital.service';
 
 @Injectable({ providedIn: 'root' })
@@ -10,6 +10,7 @@ export class CapitalStore {
 
     // Signals globales del módulo
     list = signal<TransactionResponse[]>([]);
+    summary = signal<FinancialSummaryDto | null>(null);
 
     loading = signal(false);
     loadingDialog = signal(false);
@@ -54,6 +55,14 @@ export class CapitalStore {
         });
     }
 
+    loadSummary() {
+        this.service.getFinancialSummary().subscribe({
+            next: (res) => {
+                this.summary.set(res.data);
+            }
+        });
+    }
+
     onPageChange(event: { first: number; rows: number }) {
         const currentPage = event.first / event.rows + 1;
         this.page.set(currentPage);
@@ -94,6 +103,7 @@ export class CapitalStore {
                 });
 
                 this.loadList();
+                this.loadSummary();
                 this.closeDialog();
                 this.saving.set(false);
             },
