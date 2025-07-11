@@ -57,10 +57,6 @@
                 Categoria
                 <p-sortIcon field="commission" />
             </th>
-            <th pSortableColumn="price" style="width: 15%">
-                Precio
-                <p-sortIcon field="price" />
-            </th>
 
             <th style="width: 15%">Acciones</th>
         </tr>
@@ -79,9 +75,6 @@
             </td>
             <td>
                 {{ product.category.name }}
-            </td>
-            <td>
-                {{ product.price | currency: 'PEN' }}
             </td>
 
             <td>

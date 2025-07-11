@@ -1,3 +1,5 @@
+import { ProductItemStatus } from '../../../admin/products/unique-products/models/unique-product.model';
+
 export interface UniqueProductDto {
     id: number;
     productId: number;
@@ -6,6 +8,7 @@ export interface UniqueProductDto {
     serialCode: string;
     condition: string;
     functionality: string;
+    status: ProductItemStatus;
     salePrice: number;
     sold: boolean;
     profit: number;

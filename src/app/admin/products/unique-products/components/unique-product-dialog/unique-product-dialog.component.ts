@@ -137,7 +137,6 @@ export class UniqueProductDialogComponent {
     }
 
     private readonly syncFormEffect = effect(() => {
-        console.log('[EFFECT] syncFormEffect triggered. dialogOpen =', this.dialogOpen());
         if (!this.dialogOpen()) return;
 
         this.submitted.set(false);
@@ -178,7 +177,7 @@ export class UniqueProductDialogComponent {
             const nuevoPrecio = this.unitCost + utilidad;
 
             this.isUpdatingInternally = true;
-            salePriceCtrl.setValue(+nuevoPrecio.toFixed(2), { emitEvent: false });
+            salePriceCtrl.setValue(+nuevoPrecio, { emitEvent: false });
             this.isUpdatingInternally = false;
         });
 
@@ -190,7 +189,7 @@ export class UniqueProductDialogComponent {
             const nuevoGain = gainType === 'PERCENT' ? (utilidad / this.unitCost) * 100 : utilidad;
 
             this.isUpdatingInternally = true;
-            gainValueCtrl.setValue(+nuevoGain.toFixed(2), { emitEvent: false });
+            gainValueCtrl.setValue(+nuevoGain, { emitEvent: false });
             this.isUpdatingInternally = false;
         });
 
@@ -202,7 +201,7 @@ export class UniqueProductDialogComponent {
             const nuevoPrecio = this.unitCost + utilidad;
 
             this.isUpdatingInternally = true;
-            salePriceCtrl.setValue(+nuevoPrecio.toFixed(2), { emitEvent: false });
+            salePriceCtrl.setValue(+nuevoPrecio, { emitEvent: false });
             this.isUpdatingInternally = false;
         });
     });

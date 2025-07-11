@@ -11,7 +11,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { Router } from '@angular/router';
 import { UniqueProductDto } from '../../models/unique-product.model';
-
+import { ImageModule } from 'primeng/image';
 interface UniqueProductState {
     loading: boolean;
     data: UniqueProductDto[] | [];
@@ -28,7 +28,7 @@ interface UniqueProductState {
 @Component({
     selector: 'app-unique-product-list',
     standalone: true,
-    imports: [CommonModule, ProgressSpinnerModule, ToolbarModule, TagModule, IconFieldModule, InputIconModule, ButtonModule, TableModule],
+    imports: [CommonModule, ProgressSpinnerModule, ImageModule, ToolbarModule, TagModule, IconFieldModule, InputIconModule, ButtonModule, TableModule],
     templateUrl: './unique-product-list.component.html'
 })
 export class UniqueProductListComponent implements OnInit {
@@ -98,6 +98,28 @@ export class UniqueProductListComponent implements OnInit {
     get first(): number {
         const s = this.state();
         return ((s?.page ?? 1) - 1) * (s?.limit ?? 10);
+    }
+
+    getStatusLabel(status: string): string {
+        switch (status) {
+            case 'IN_STOCK':
+                return 'Stock';
+            case 'ORDERED':
+                return 'Próximamente';
+            default:
+                return status;
+        }
+    }
+
+    getStatusSeverity(status: string): 'success' | 'info' | 'warning' | 'danger' | undefined {
+        switch (status) {
+            case 'IN_STOCK':
+                return 'success'; // verde
+            case 'ORDERED':
+                return 'warning'; // amarillo
+            default:
+                return undefined;
+        }
     }
 
     onPageChange(event: any) {
