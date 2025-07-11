@@ -109,6 +109,16 @@ export class TransactionsComponent {
         this.store.openDialog();
     }
 
+    getAccountDisplay(capital: TransactionResponse): string {
+        const origin = capital.originAccount?.name;
+        const dest = capital.account?.name;
+
+        if (origin && dest) return `${this.getAccountTypeLabel(origin)} → ${this.getAccountTypeLabel(dest)}`;
+        if (origin && !dest) return `${this.getAccountTypeLabel(origin)} → -`;
+        if (!origin && dest) return this.getAccountTypeLabel(dest);
+        return 'Cuenta desconocida';
+    }
+
     onEdit() {
         this.store.openDialog();
     }
@@ -128,6 +138,10 @@ export class TransactionsComponent {
     }
 
     getSignedAmount(tx: TransactionResponse): number {
+        const accountName = tx.account?.name;
+
+        if (!accountName) return -tx.amount; // o return 0; si prefieres neutralizar
+
         const positiveCombinations = [
             { type: 'INJECTION', account: 'CASH' },
             { type: 'SALE_PROFIT', account: 'CASH' },
@@ -137,7 +151,7 @@ export class TransactionsComponent {
             { type: 'PURCHASE_EXPENSE', account: 'INVENTORY' }
         ];
 
-        const isPositive = positiveCombinations.some((combo) => combo.type === tx.type && combo.account === tx.account.name);
+        const isPositive = positiveCombinations.some((combo) => combo.type === tx.type && combo.account === accountName);
 
         return isPositive ? tx.amount : -tx.amount;
     }

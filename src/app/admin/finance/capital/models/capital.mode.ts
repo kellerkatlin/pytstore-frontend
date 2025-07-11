@@ -47,4 +47,6 @@ export interface FinancialSummaryDto {
         total: number;
     }[];
     totalSales: number;
+    capitalInjection: number;
+    netProfit: number;
 }

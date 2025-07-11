@@ -104,6 +104,7 @@ export class UniqueProductStore {
     closeDialog() {
         this.dialogOpen.set(false);
         this.selectedProductId.set(null);
+        this.loadList();
     }
 
     // Guardar (crear o editar)

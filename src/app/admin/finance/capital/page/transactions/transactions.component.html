@@ -29,6 +29,43 @@
             </ng-template>
         </p-card>
     </div>
+    <!-- Tarjeta: Ganancia Neta -->
+    @let netProfit = summary();
+
+    @if (netProfit) {
+        <div class="col-span-12 md:col-span-3">
+            <p-card>
+                <ng-template pTemplate="title">Ganancia Neta</ng-template>
+                <ng-template pTemplate="content">
+                    <div
+                        class="text-2xl font-bold"
+                        [ngClass]="{
+                            'text-green-600': netProfit.netProfit >= 0,
+                            'text-red-500': netProfit.netProfit < 0
+                        }"
+                    >
+                        {{ summary()?.netProfit | currency: 'S/.' }}
+                    </div>
+                </ng-template>
+            </p-card>
+        </div>
+        <div class="col-span-12 md:col-span-3">
+            <p-card>
+                <ng-template pTemplate="title">Ingreso de capital</ng-template>
+                <ng-template pTemplate="content">
+                    <div
+                        class="text-2xl font-bold"
+                        [ngClass]="{
+                            'text-green-600': netProfit.capitalInjection >= 0,
+                            'text-red-500': netProfit.capitalInjection < 0
+                        }"
+                    >
+                        {{ summary()?.capitalInjection | currency: 'S/.' }}
+                    </div>
+                </ng-template>
+            </p-card>
+        </div>
+    }
 </div>
 
 <p-toolbar styleClass="mb-6">
@@ -132,14 +169,7 @@
 
             <td>{{ formatDateTime(capital.createdAt) }}</td>
             <td>
-                @if (capital.originAccount) {
-                    <span> {{ getAccountTypeLabel(capital.originAccount?.name) }} → {{ getAccountTypeLabel(capital.account?.name) }} </span>
-                }
-                @if (!capital.originAccount) {
-                    <span>
-                        {{ getAccountTypeLabel(capital.account?.name) }}
-                    </span>
-                }
+                <span>{{ getAccountDisplay(capital) }}</span>
             </td>
 
             <td>{{ getCapitalTypeLabel(capital.type) }}</td>
