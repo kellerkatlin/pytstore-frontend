@@ -72,6 +72,8 @@ export class ProductDialogComponent {
     private readonly syncFormEffect = effect(() => {
         if (this.dialogOpen()) {
             this.submitted.set(false);
+            this.categoryStore.loadList();
+            this.brandStore.loadList();
 
             const product = this.selectedProduct();
             if (product) {
